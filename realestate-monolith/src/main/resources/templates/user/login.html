@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link th:href="@{/access/vendor/fontawesome-free/css/all.min.css}" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link th:href="@{/access/css/sb-admin-2.min.css}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/access/css/login.css}" />
+    <style>
+        :root {
+            --primary-blue: #1e88e5;
+            --secondary-blue: #0d47a1;
+            --light-blue: #e3f2fd;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            min-height: 100vh;
+        }
+
+        .card {
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        .card-left {
+            background-image: url('https://images.unsplash.com/photo-1563986768609-322da13575f3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80');
+            background-size: cover;
+            background-position: center;
+            min-height: 100%;
+        }
+
+        .form-control {
+            padding: 0.75rem 1.2rem;
+            border: 1px solid #e1e1e1;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 0.2rem rgba(30, 136, 229, 0.25);
+        }
+
+        .btn-login {
+            background-color: var(--primary-blue);
+            color: white;
+            padding: 0.6rem 2rem;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-login:hover {
+            background-color: var(--secondary-blue);
+            transform: translateY(-2px);
+        }
+
+        .logo-container {
+            margin-bottom: 1rem;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+        }
+
+        .link-info {
+            color: var(--primary-blue);
+            transition: all 0.2s ease;
+        }
+
+        .link-info:hover {
+            color: var(--secondary-blue);
+            text-decoration: none;
+        }
+
+        .alert {
+            border-radius: 8px;
+        }
+
+        @media (max-width: 992px) {
+            .card-left {
+                display: none;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .container {
+                padding: 0 1rem;
+            }
+
+            .card {
+                border-radius: 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <div class="row justify-content-center align-items-center min-vh-100 py-5">
+        <div class="col-lg-10 col-xl-9">
+            <div class="card bg-white">
+                <div class="row g-0">
+                    <div class="col-lg-6 d-none d-lg-block card-left"></div>
+                    <div class="col-lg-6">
+                        <div class="card-body p-4 p-lg-5">
+                            <div class="logo-container d-flex align-items-center">
+                                <img th:src="@{/access/image/herta.png}" alt="Logo" class="logo rounded-circle me-2">
+                                <h4 class="fw-bold text-primary mb-0">Welcome Back</h4>
+                            </div>
+
+                            <h2 class="fw-bold mb-4">Log In</h2>
+
+                            <div th:if="${param.error}" class="alert alert-danger mb-4" role="alert">
+                                <i class="fas fa-exclamation-circle me-2"></i> Tên tài khoản hoặc mật khẩu không chính xác.
+                            </div>
+
+                            <div th:if="${error}" class="alert alert-danger mb-4" role="alert">
+                                <i class="fas fa-exclamation-circle me-2"></i> <span th:text="${error}"></span>
+                            </div>
+
+                            <div th:if="${success}" class="alert alert-success mb-4" role="alert">
+                                <i class="fas fa-check-circle me-2"></i> <span th:text="${success}"></span>
+                            </div>
+
+                            <form th:action="@{/login}" method="post" class="needs-validation" novalidate>
+                                <div class="mb-4">
+                                    <label for="username" class="form-label">Email address</label>
+                                    <div class="input-group">
+                                            <span class="input-group-text bg-light border-end-0">
+                                                <i class="fas fa-envelope text-muted"></i>
+                                            </span>
+                                        <input id="username" name="username" type="email" class="form-control border-start-0"
+                                               placeholder="Enter your email" required>
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <div class="d-flex justify-content-between">
+                                        <label for="password" class="form-label">Password</label>
+                                        <a th:href="@{/user/forgotPassword}" class="small link-info text-decoration-none">
+                                            Forgot Password?
+                                        </a>
+                                    </div>
+                                    <div class="input-group">
+                                            <span class="input-group-text bg-light border-end-0">
+                                                <i class="fas fa-lock text-muted"></i>
+                                            </span>
+                                        <input id="password" name="password" type="password" class="form-control border-start-0"
+                                               placeholder="Enter your password" required>
+                                    </div>
+                                </div>
+
+                                <div class="d-grid mb-4">
+                                    <button type="submit" class="btn btn-login rounded-pill fw-bold">
+                                        <i class="fas fa-sign-in-alt me-2"></i> Login
+                                    </button>
+                                </div>
+
+                                <div class="text-center">
+                                    <p class="mb-0">Don't have an account?
+                                        <a th:href="@{/user/register}" class="link-info fw-bold text-decoration-none">
+                                            Register here
+                                        </a>
+                                    </p>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:insert="~{ home/footer :: footer}"></th:block>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+</body>
+
+</html>

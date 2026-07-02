@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tạo bài đăng</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+          integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <style>
+        :root {
+            --primary-color: #1976D2;
+            --primary-light: #BBDEFB;
+            --primary-dark: #0D47A1;
+            --accent-color: #03A9F4;
+            --white: #fff;
+            --gray-100: #f8f9fa;
+            --gray-200: #e9ecef;
+            --gray-300: #dee2e6;
+            --gray-400: #ced4da;
+            --gray-500: #adb5bd;
+            --gray-800: #343a40;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--gray-100);
+            color: #333;
+        }
+
+        .payment-header {
+            padding-top: 120px;
+            background-color: var(--white);
+        }
+
+        .payment-step {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 12px 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .payment-container {
+            background-color: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .payment-title {
+            color: var(--primary-dark);
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-light);
+        }
+
+        .card-option {
+            height: 100%;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            background-color: var(--white);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-option.regular {
+            border-color: var(--primary-light);
+        }
+
+        .card-option.premium {
+            border-color: var(--accent-color);
+        }
+
+        .card-option:hover, .card-option.selected {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-option.selected {
+            border-color: var(--primary-color);
+            border-width: 3px;
+        }
+
+        .card-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: var(--accent-color);
+            color: white;
+            padding: 5px 10px;
+            font-size: 12px;
+            border-bottom-left-radius: 8px;
+        }
+
+        .card-header {
+            text-align: center;
+            padding: 20px 0;
+            color: var(--primary-dark);
+        }
+
+        .premium .card-header {
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        .card-price {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 10px 0;
+            color: var(--primary-dark);
+        }
+
+        .premium .card-price {
+            color: var(--primary-dark);
+        }
+
+        .card-feature {
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        .card-icon {
+            font-size: 28px;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .premium .card-icon {
+            color: var(--accent-color);
+        }
+
+        .card-footer {
+            text-align: center;
+            padding: 15px 0;
+        }
+
+        .select-btn {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            border-radius: 50px;
+            padding: 8px 24px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .select-btn:hover, .selected .select-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .premium .select-btn {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .premium .select-btn:hover, .premium.selected .select-btn {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .day-option {
+            border: 2px solid var(--gray-300);
+            border-radius: 8px;
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            height: 100%;
+        }
+
+        .day-option:hover, .day-option.selected {
+            border-color: var(--primary-color);
+            background-color: var(--primary-light);
+            transform: translateY(-3px);
+        }
+
+        .day-option.selected {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            color: var(--gray-800);
+        }
+
+        .summary-value {
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        .total-row {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid var(--primary-light);
+        }
+
+        .payment-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .payment-btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .exit-btn {
+            color: var(--gray-800);
+            border: 1px solid var(--gray-400);
+            background-color: white;
+            transition: all 0.3s ease;
+        }
+
+        .exit-btn:hover {
+            background-color: var(--gray-200);
+            color: var(--gray-800);
+        }
+
+        .low-balance-alert {
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .deposit-btn {
+            background-color: white;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            transition: all 0.3s ease;
+        }
+
+        .deposit-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .payment-container {
+                padding: 20px 15px;
+            }
+
+            .card-option {
+                margin-bottom: 20px;
+            }
+
+            .day-option {
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<th:block th:insert="~{ home/header :: header}"></th:block>
+
+<div class="container payment-header">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="payment-step">
+                <h4 class="mb-1"><i class="fas fa-credit-card me-2"></i> Thanh toán</h4>
+                <p class="mb-0">Bước 4: Hoàn tất thanh toán để đăng tin</p>
+            </div>
+        </div>
+        <div class="col-md-4 text-end">
+            <a th:href="@{/home/home}" class="btn exit-btn rounded-pill btn-lg">
+                <i class="fas fa-times me-2"></i> Thoát
+            </a>
+        </div>
+    </div>
+
+    <div th:if="${error}" class="row mt-4">
+        <div class="col-12">
+            <div class="low-balance-alert">
+                <h5 class="mb-3"><i class="fas fa-exclamation-triangle me-2"></i> <strong>Tài khoản không đủ tiền</strong></h5>
+                <p>Vui lòng nạp thêm tiền để tiếp tục đăng tin.</p>
+                <a th:href="@{/home/home}" class="btn deposit-btn rounded-pill">
+                    <i class="fas fa-plus-circle me-2"></i> <strong>Nạp tiền ngay</strong>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <form th:action="@{/payment/payment-post}" method="post" class="mt-4">
+        <input type="hidden" th:value="${user.userId}" name="userId">
+
+        <!-- Plan Selection Section -->
+        <div class="payment-container">
+            <h4 class="payment-title"><i class="fas fa-cog me-2"></i> Chọn gói đăng tin</h4>
+
+            <div class="row">
+                <!-- Regular Plan -->
+                <div class="col-md-6 mb-4 mb-md-0">
+                    <div class="card-option regular">
+                        <div class="card-header">
+                            <h5>Tin Thường</h5>
+                        </div>
+                        <div class="card-price text-center">
+                            2.000 đ/ngày
+                        </div>
+                        <div class="card-feature">
+                            <div class="card-icon">
+                                <i class="fas fa-eye"></i>
+                            </div>
+                            <p>x2 lượt xem tin</p>
+                        </div>
+                        <div class="card-footer">
+                            <input type="radio" name="ad-type" id="option" value="Tin thường" hidden>
+                            <label for="option" class="select-btn btn">
+                                <i class="fas fa-check me-1"></i> Chọn
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Premium Plan -->
+                <div class="col-md-6">
+                    <div class="card-option premium">
+                        <div class="card-badge">Khuyến nghị</div>
+                        <div class="card-header">
+                            <h5>Tin Premium</h5>
+                        </div>
+                        <div class="card-price text-center">
+                            100.000 đ/ngày
+                        </div>
+                        <div class="card-feature">
+                            <div class="card-icon">
+                                <i class="fas fa-eye"></i>
+                            </div>
+                            <p>x10 lượt xem tin</p>
+                        </div>
+                        <div class="card-footer">
+                            <input type="radio" name="ad-type" id="option2" value="Tin Premium" hidden>
+                            <label for="option2" class="select-btn btn">
+                                <i class="fas fa-check me-1"></i> Chọn
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Duration Selection -->
+            <h5 class="mt-5 mb-3">Thời gian đăng tin</h5>
+            <div class="row">
+                <div class="col-6 col-md-3 mb-3">
+                    <div class="day-option">
+                        <input type="radio" value="7" id="days7" name="option-day" hidden>
+                        <h6 class="mb-0">7 ngày</h6>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3 mb-3">
+                    <div class="day-option">
+                        <input type="radio" value="14" id="days14" name="option-day" hidden>
+                        <h6 class="mb-0">14 ngày</h6>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3 mb-3">
+                    <div class="day-option">
+                        <input type="radio" value="21" id="days21" name="option-day" hidden>
+                        <h6 class="mb-0">21 ngày</h6>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3 mb-3">
+                    <div class="day-option">
+                        <input type="radio" value="30" id="days30" name="option-day" hidden>
+                        <h6 class="mb-0">30 ngày</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="payment-container">
+            <h4 class="payment-title"><i class="fas fa-receipt me-2"></i> Tổng quan đơn hàng</h4>
+
+            <div class="summary-item">
+                <div class="summary-label">Loại tin:</div>
+                <div class="summary-value post-type" id="selected-plan">Tin thường</div>
+            </div>
+
+            <div class="summary-item">
+                <div class="summary-label">Thời gian đăng tin:</div>
+                <div class="summary-value" id="selected-value">Chưa chọn</div>
+            </div>
+
+            <div class="summary-item">
+                <div class="summary-label">Khuyến mãi:</div>
+                <div class="summary-value">0 đ</div>
+            </div>
+
+            <div class="summary-item total-row">
+                <div class="summary-label"><strong>Tổng thanh toán:</strong></div>
+                <div class="summary-value post-fee" id="total-fee">Vui lòng chọn gói và thời gian</div>
+            </div>
+
+            <div class="text-end mt-4">
+                <button type="submit" class="payment-btn">
+                    <i class="fas fa-check-circle me-2"></i> Thanh toán và đăng tin
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        // Plan selection
+        $('.card-option').click(function() {
+            $('.card-option').removeClass('selected');
+            $(this).addClass('selected');
+            const radioInput = $(this).find('input[type="radio"]');
+            radioInput.prop('checked', true);
+
+            $('#selected-plan').text(radioInput.val());
+            updateTotalFee();
+        });
+
+        // Default select first option
+        $('.card-option').first().click();
+
+        // Day selection
+        $('.day-option').click(function() {
+            $('.day-option').removeClass('selected');
+            $(this).addClass('selected');
+            const radioInput = $(this).find('input[type="radio"]');
+            radioInput.prop('checked', true);
+
+            $('#selected-value').text(radioInput.val() + ' ngày');
+            updateTotalFee();
+        });
+
+        // Calculate and update total fee
+        function updateTotalFee() {
+            const planType = $('input[name="ad-type"]:checked').val();
+            const days = $('input[name="option-day"]:checked').val();
+
+            if (planType && days) {
+                let pricePerDay = planType === 'Tin thường' ? 2000 : 100000;
+                let totalFee = pricePerDay * days;
+
+                // Format to Vietnamese currency
+                $('#total-fee').text(totalFee.toLocaleString('vi-VN') + ' đ');
+            } else {
+                $('#total-fee').text('Vui lòng chọn gói và thời gian');
+            }
+        }
+    });
+</script>
+</body>
+</html>

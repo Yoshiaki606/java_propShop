@@ -1,0 +1,32 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: auth-service
+  datasource:
+    url: jdbc:mysql://localhost:3307/security_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: springstudent
+    password: springstudent
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  session:
+    store-type: redis
+    redis:
+      repository-type: indexed
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+jwt:
+  secret: 9a4f2c8d3b7a1e5f9g2h6k8m0n3p5q7r9s1t3u5v7w9x0y2z4a6b8c0d2e4f6g8h
+  expiration: 86400000 # 1 day in milliseconds

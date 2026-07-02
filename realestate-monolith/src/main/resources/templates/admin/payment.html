@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin - Payments</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .transition-all {
+            transition-property: all;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms;
+        }
+
+        .sidebar-item {
+            position: relative;
+        }
+
+        .sidebar-item:hover::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 4px;
+            height: 100%;
+            background-color: #0ea5e9;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-sidebar-toggle {
+                display: block;
+            }
+
+            .sidebar-visible {
+                transform: translateX(0);
+            }
+
+            .sidebar-hidden {
+                transform: translateX(-100%);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 flex h-screen flex-col overflow-hidden">
+<!-- Header -->
+<header class="bg-white border-b border-gray-200 w-full z-10">
+    <div class="flex items-center justify-between px-4 py-3 lg:px-6">
+        <!-- Mobile menu button -->
+        <button id="mobile-menu-button" class="block md:hidden p-2 rounded-md text-gray-600 hover:text-primary-600 hover:bg-gray-100 focus:outline-none">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+            </svg>
+        </button>
+
+        <!-- Logo/Title -->
+        <div class="flex-1 flex justify-center md:justify-start">
+            <h1 class="text-2xl md:text-3xl font-bold text-primary-600">ADMIN CENTER</h1>
+        </div>
+
+        <!-- User menu -->
+        <div class="relative">
+            <button class="flex items-center text-gray-700 hover:text-primary-600 focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+            </button>
+        </div>
+    </div>
+</header>
+
+<!-- Notification -->
+<div th:if="${notification != null}" th:text="${notification}" class="fixed top-16 right-5 border border-green-700 flex items-center p-4 mb-4 text-green-700 bg-green-100 rounded-lg shadow-lg z-50" role="alert" id="notification">
+    haha
+</div>
+
+<!-- Main Content -->
+<div class="flex flex-1 overflow-hidden">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="bg-white w-64 border-r border-gray-200 transition-all shadow-sm transform md:translate-x-0 sidebar-hidden md:relative absolute inset-y-0 left-0 z-20 md:z-0 h-full overflow-y-auto">
+        <nav class="flex flex-col h-full px-3 py-6">
+            <div class="flex-1 space-y-1">
+                <a href="/admin/users" class="sidebar-item group flex items-center justify-between px-3 py-3 rounded-lg hover:bg-primary-50 transition-all text-gray-700 hover:text-primary-700">
+                    <div class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-3 text-gray-500 group-hover:text-primary-600">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
+                        </svg>
+                        <span class="font-medium">Người Dùng</span>
+                    </div>
+                </a>
+
+                <a href="/admin/listings" class="sidebar-item group flex items-center justify-between px-3 py-3 rounded-lg hover:bg-primary-50 transition-all text-gray-700 hover:text-primary-700">
+                    <div class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-3 text-gray-500 group-hover:text-primary-600">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 0 1-2.25 2.25M16.5 7.5V18a2.25 2.25 0 0 0 2.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 0 0 2.25 2.25h13.5M6 7.5h3v3H6v-3Z" />
+                        </svg>
+                        <span class="font-medium">Bài Đăng</span>
+                    </div>
+                </a>
+
+                <a href="/admin/payments" class="sidebar-item group flex items-center justify-between px-3 py-3 rounded-lg bg-primary-50 text-primary-700 transition-all">
+                    <div class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-3 text-primary-600">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
+                        <span class="font-medium">Lịch sử giao dịch</span>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Logout -->
+            <div class="mt-6">
+                <a th:href="@{/admin/logout}" class="flex items-center justify-center px-4 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all shadow-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+                    </svg>
+                    Đăng xuất
+                </a>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- Content Area -->
+    <main class="flex-1 overflow-y-auto bg-gray-50 p-4 md:p-6">
+        <div class="max-w-7xl mx-auto">
+            <!-- Page Header -->
+            <div class="mb-6 flex justify-between items-center">
+                <h2 class="text-2xl font-semibold text-gray-800">Lịch sử giao dịch</h2>
+
+                <!-- Filter Buttons -->
+                <div class="flex space-x-2">
+                    <a href="/admin/payments?option=0" class="px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none">
+                        Tất cả
+                    </a>
+                    <a href="/admin/payments?option=1" class="px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none">
+                        Nạp tiền
+                    </a>
+                    <a href="/admin/payments?option=2" class="px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none">
+                        Đăng bài
+                    </a>
+                </div>
+            </div>
+
+            <!-- Payments Content -->
+            <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                <div class="flex justify-center py-12" th:if="${payments.isEmpty() and userPayments.isEmpty()}">
+                    <div class="flex flex-col items-center justify-center space-y-6 w-full p-6">
+                        <img th:src="@{/access/image/empty-cart.jpg}" alt="empty-cart.jpg" class="w-40 h-40">
+                        <p class="text-center text-xl text-gray-600">Không có giao dịch nào</p>
+                    </div>
+                </div>
+
+                <!-- Payments Table -->
+                <div th:if="${!payments.isEmpty() or !userPayments.isEmpty()}" class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Người dùng</th>
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thời gian</th>
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phân loại</th>
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hình thức GD</th>
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Khoảng tiền</th>
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
+                        </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                        <!-- Property payments -->
+                        <tr th:each="payment : ${payments}" th:if="${!payments.isEmpty()}" class="hover:bg-gray-50">
+                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${payment.paymentId}"></td>
+                            <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900" th:text="${payment.properties.user.fullName}"></td>
+                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${payment.date}"></td>
+                            <td class="px-4 py-4 whitespace-nowrap">
+                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                    Đăng bài
+                  </span>
+                            </td>
+                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${payment.paymentMethod}"></td>
+                            <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-red-500 priceSale" th:text="${payment.amount}"></td>
+                            <td class="px-4 py-4 whitespace-nowrap">
+                  <span th:text="${payment.status}"
+                        th:class="${payment.status == 'Thành công' ? 'px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800' :
+                                  (payment.status == 'Đang xử lý' ? 'px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800' :
+                                  'px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800')}">
+                  </span>
+                            </td>
+                        </tr>
+
+                        <!-- User payments -->
+                        <tr th:each="userPayment : ${userPayments}" th:if="${!userPayments.isEmpty()}" class="hover:bg-gray-50">
+                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${userPayment.payment.paymentId}"></td>
+                            <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900" th:text="${userPayment.payment.user.fullName}"></td>
+                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${userPayment.date}"></td>
+                            <td class="px-4 py-4 whitespace-nowrap">
+                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                    Nạp tiền
+                  </span>
+                            </td>
+                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${userPayment.paymentMethod}"></td>
+                            <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-green-500 priceSale" th:text="${userPayment.amount}"></td>
+                            <td class="px-4 py-4 whitespace-nowrap">
+                  <span th:text="${userPayment.status}"
+                        th:class="${userPayment.status == 'Thành công' ? 'px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800' :
+                                  (userPayment.status == 'Đang xử lý' ? 'px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800' :
+                                  'px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800')}">
+                  </span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+    // Mobile menu toggle
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const sidebar = document.getElementById('sidebar');
+
+    mobileMenuButton.addEventListener('click', () => {
+        sidebar.classList.toggle('sidebar-hidden');
+        sidebar.classList.toggle('sidebar-visible');
+    });
+
+    // Close sidebar when clicking outside on mobile
+    document.addEventListener('click', (event) => {
+        const isClickInsideSidebar = sidebar.contains(event.target);
+        const isClickOnMenuButton = mobileMenuButton.contains(event.target);
+
+        if (!isClickInsideSidebar && !isClickOnMenuButton && window.innerWidth < 768 && sidebar.classList.contains('sidebar-visible')) {
+            sidebar.classList.remove('sidebar-visible');
+            sidebar.classList.add('sidebar-hidden');
+        }
+    });
+
+    // Ensure proper sidebar state on resize
+    window.addEventListener('resize', () => {
+        if (window.innerWidth >= 768) {
+            sidebar.classList.remove('sidebar-hidden');
+            sidebar.classList.remove('sidebar-visible');
+        } else if (!sidebar.classList.contains('sidebar-visible')) {
+            sidebar.classList.add('sidebar-hidden');
+        }
+    });
+
+    // Initialize sidebar state
+    if (window.innerWidth >= 768) {
+        sidebar.classList.remove('sidebar-hidden');
+    }
+
+    // Notification dismiss
+    window.onload = function () {
+        const notification = document.getElementById('notification');
+
+        if (notification) {
+            setTimeout(() => {
+                notification.style.transition = 'opacity 0.5s';
+                notification.style.opacity = '0';
+                setTimeout(() => notification.remove(), 500);
+            }, 3000);
+        }
+    };
+</script>
+
+<!-- Price format script -->
+<script th:src="@{/access/js/price-format.js}"></script>
+</body>
+</html>

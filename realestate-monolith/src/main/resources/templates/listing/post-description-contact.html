@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Tạo bài đăng - Thông tin liên hệ</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-..." crossorigin="anonymous">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <!-- Custom Styles -->
+    <style>
+        :root {
+            --bs-primary: #007bff;
+            --bs-body-bg: #fff;
+        }
+        body {
+            background-color: var(--bs-body-bg);
+            color: #212529;
+        }
+        .card {
+            border-radius: 1rem;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+        }
+        .step-indicator {
+            font-size: 1.1rem;
+            color: var(--bs-primary);
+        }
+        .step-indicator span {
+            font-weight: 500;
+        }
+        .form-control,
+        .form-control:focus,
+        .form-select,
+        .form-select:focus,
+        textarea.form-control {
+            border-radius: 0.75rem;
+            padding: 0.75rem 1rem;
+            border: 1px solid #ced4da;
+        }
+        .btn-primary {
+            background-color: var(--bs-primary);
+            border-color: var(--bs-primary);
+            border-radius: 2rem;
+            padding: 0.6rem 1.5rem;
+        }
+        .btn-primary:hover {
+            background-color: #0069d9;
+            border-color: #0062cc;
+        }
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--bs-primary);
+        }
+        .required::after {
+            content: " *";
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<!-- Header -->
+<th:block th:insert="~{ home/header :: header}"></th:block>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-8">
+            <div class="card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="step-indicator">
+                        <span>Bước 3:</span> Thông tin liên hệ
+                    </div>
+                    <a th:href="@{/home/home}" class="btn btn-outline-secondary">Thoát</a>
+                </div>
+                <hr />
+                <form class="needs-validation" th:action="@{/listing/contact}" th:object="${contact}" method="post" novalidate>
+                    <!-- Contact Information -->
+                    <div class="mb-4">
+                        <h2 class="card-title">Thông tin liên hệ</h2>
+                        <div class="row g-3 mt-2">
+                            <div class="col-12">
+                                <label for="contact-user" class="form-label required">Họ và tên</label>
+                                <input th:field="*{fullName}" type="text" name="contact-user" id="contact-user" class="form-control" placeholder="Nhập họ và tên" required>
+                                <div class="invalid-feedback">
+                                    Vui lòng nhập họ và tên.
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label for="contact-email" class="form-label required">Email</label>
+                                <input th:field="*{email}" type="email" name="contact-email" id="contact-email" class="form-control" placeholder="Nhập email" required>
+                                <div class="invalid-feedback">
+                                    Vui lòng nhập email hợp lệ.
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label for="contact-phone" class="form-label required">Số điện thoại</label>
+                                <input th:field="*{phone}" type="text" name="contact-phone" id="contact-phone" class="form-control" placeholder="Nhập số điện thoại" required>
+                                <div class="invalid-feedback">
+                                    Vui lòng nhập số điện thoại.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Title & Description -->
+                    <div class="mb-4">
+                        <h2 class="card-title">Tiêu đề và Mô tả</h2>
+                        <div class="row g-3 mt-2">
+                            <div class="col-12">
+                                <label for="title" class="form-label required">Tiêu đề</label>
+                                <textarea name="title" id="title" class="form-control" rows="2" placeholder="Mô tả ngắn gọn về loại hình bất động sản, diện tích, địa chỉ" required></textarea>
+                                <div class="invalid-feedback">
+                                    Vui lòng nhập tiêu đề.
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <label for="description" class="form-label required">Mô tả</label>
+                                <textarea name="description" id="description" class="form-control" rows="5" placeholder="Mô tả chi tiết về: loại hình bất động sản, vị trí, diện tích, tiện ích, tình trạng nội thất, ..." required></textarea>
+                                <div class="invalid-feedback">
+                                    Vui lòng nhập mô tả chi tiết.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary">Tiếp theo</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-..." crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+<script type="text/javascript" th:src="@{/access/js/apiprovince.js}"></script>
+<script>
+    // Bootstrap form validation
+    (function () {
+        'use strict'
+        var forms = document.querySelectorAll('.needs-validation')
+        Array.prototype.slice.call(forms).forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.classList.add('was-validated')
+            }, false)
+        })
+    })()
+</script>
+</body>
+</html>

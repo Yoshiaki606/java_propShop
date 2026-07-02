@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Listing information</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+          integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+          integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link rel="stylesheet" th:href="@{/access/css/listing-info.css}">
+    <script src="https://cdn.jsdelivr.net/npm/@goongmaps/goong-js@1.0.9/dist/goong-js.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@goongmaps/goong-js@1.0.9/dist/goong-js.css" rel="stylesheet"/>
+</head>
+
+<body>
+<th:block th:insert="~{ home/header :: header}"></th:block>
+
+
+<!-- THÔNG TIN BĐS -->
+<div class="container property-header">
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Property Gallery -->
+            <div class="card">
+                <div class="main-image-container">
+                    <img th:src="${property.listImages.get(0).imageUrl}" id="main-image" alt="Main photo">
+                </div>
+
+                <div class="thumbnails-wrapper">
+                    <button class="nav-btn prev-btn" onclick="scrollThumbnails(-1)">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+
+                    <div class="thumbnails-container">
+                        <div class="thumbnails">
+                            <div th:each="image : ${property.listImages}">
+                                <img th:src="${image.imageUrl}" onclick="changeImage(this)" style="width: 135px; height: 80px;" alt="Thumbnail">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="nav-btn next-btn" onclick="scrollThumbnails(1)">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+
+                <div class="card-body">
+                    <h2 th:text="${property.propertyTitle}" class="property-title">
+                        8 suất ngoại giao - hàng đẹp - góc-Penthouse- shop-căn hộ Masteri Grand View - The Global City
+                    </h2>
+                    <p th:text="${property.address.fullAddress}" class="property-address">
+                        Dự án Celadon City, Đường N1, Phường Sơn Kỳ, Tân Phú, Hồ Chí Minh
+                    </p>
+
+                    <hr>
+
+                    <div class="property-stats">
+                        <div class="stat-item">
+                            <div class="stat-label">Mức giá</div>
+                            <div th:if="${property.propertyPrice>1000000000}" th:text="${property.propertyPrice/1000000000}+' tỷ'" class="stat-value">3 tỷ</div>
+                            <div th:if="${property.propertyPrice<1000000000}" th:text="${property.propertyPrice/1000000}+' triệu'" class="stat-value">800 triệu</div>
+                        </div>
+
+                        <div th:if="${property.squareMeters>0}" class="stat-item">
+                            <div class="stat-label">Diện tích</div>
+                            <div th:text="${property.squareMeters}+' m²'" class="stat-value">65 m²</div>
+                        </div>
+
+                        <div th:if="${property.bedrooms>0}" class="stat-item">
+                            <div class="stat-label">Phòng ngủ</div>
+                            <div th:text="${property.bedrooms}+' PN'" class="stat-value">2 PN</div>
+                        </div>
+
+                        <div th:if="${property.bathrooms>0}" class="stat-item">
+                            <div class="stat-label">Phòng tắm</div>
+                            <div th:text="${property.bathrooms}+' PT'" class="stat-value">2 PT</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Property Description -->
+            <div class="card property-details-card">
+                <h3 class="section-title">Thông tin mô tả</h3>
+                <p th:text="${property.propertyDescription}" class="mb-0">
+                    Căn hộ Celadon City Tân Phú - Ưu đãi từ chủ đầu tư Gamuda Land mua trực tiếp CĐT với
+                </p>
+            </div>
+
+            <!-- Property Details -->
+            <div class="card property-details-card">
+                <h3 class="section-title">Đặc điểm bất động sản</h3>
+
+                <div class="detail-row">
+                    <div th:if="${property.squareMeters>0}" class="detail-item col-md-6">
+                        <i class="fas fa-vector-square detail-icon"></i>
+                        <div>
+                            <strong>Diện tích: </strong>
+                            <span th:text="${property.squareMeters}+' m²'">65 m²</span>
+                        </div>
+                    </div>
+
+                    <div th:if="${property.propertyPrice>0}" class="detail-item col-md-6">
+                        <i class="fas fa-tags detail-icon"></i>
+                        <div>
+                            <strong>Mức giá: </strong>
+                            <span th:if="${property.propertyPrice>1000000000}" th:text="${property.propertyPrice/1000000000}+' tỷ'">3 tỷ</span>
+                            <span th:if="${property.propertyPrice<1000000000}" th:text="${property.propertyPrice/1000000}+' triệu'">800 triệu</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div th:if="${property.bedrooms>0}" class="detail-item col-md-6">
+                        <i class="fas fa-bed detail-icon"></i>
+                        <div>
+                            <strong>Số phòng ngủ: </strong>
+                            <span th:text="${property.bedrooms}">2</span>
+                        </div>
+                    </div>
+
+                    <div th:if="${property.bathrooms>0}" class="detail-item col-md-6">
+                        <i class="fas fa-bath detail-icon"></i>
+                        <div>
+                            <strong>Số toilet: </strong>
+                            <span th:text="${property.bathrooms}" id="atm">2</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-item col-md-6">
+                        <i class="fas fa-file-contract detail-icon"></i>
+                        <div>
+                            <strong>Pháp lý: </strong>
+                            <span th:text="${property.propertyLegal}">Sổ đỏ/Sổ hồng</span>
+                        </div>
+                    </div>
+
+                    <div class="detail-item col-md-6">
+                        <i class="fas fa-couch detail-icon"></i>
+                        <div>
+                            <strong>Nội thất: </strong>
+                            <span th:text="${property.propertyInterior}">Kính Sapphire</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <!-- Agent Contact Card -->
+            <div class="card agent-card sticky-top" style="top: 90px;">
+                <div class="text-center mb-3">
+                    <img class="agent-img mb-2"
+                         th:src="${property.user.images != null} ? ${property.user.images.imageUrl} : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'"
+                         alt="Agent photo">
+
+                    <div>
+                        <span class="badge-professional d-inline-block mb-1">Môi giới chuyên nghiệp</span>
+                        <h5 class="mb-3" th:text="${property.user.fullName}">Lê Thành Lộc</h5>
+                    </div>
+                </div>
+
+                <button class="contact-btn primary-btn" id="copyButton">
+                    <i class="fas fa-phone-alt"></i>
+                    <span id="phoneNumber" th:text="'Liên hệ: '+${property.postInformation.phone}">Liên hệ: 0345738256</span>
+                </button>
+
+                <a href="https://www.facebook.com/profile.php?id=100037132626258" class="contact-btn outline-btn mt-3">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>Chat qua Zalo</span>
+                </a>
+
+                <a href="https://www.facebook.com/profile.php?id=100037132626258" class="contact-btn outline-btn">
+                    <i class="far fa-envelope"></i>
+                    <span>Gửi mail</span>
+                </a>
+
+                <a href="https://www.facebook.com/profile.php?id=100037132626258" class="contact-btn outline-btn">
+                    <i class="fab fa-facebook-messenger"></i>
+                    <span>Messenger</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Notification -->
+<div id="notification" class="notification">
+    Số điện thoại đã được sao chép vào bộ nhớ tạm.
+</div>
+<!-- END THÔNG TIN BĐS -->
+<div class="container mt-4" style="max-width: 80%;">
+    <div class="row d-flex justify-content-center">
+        <hr>
+        <div class="information row">
+            <div class="col-md-2"></div>
+            <div class="col-md-2 d-flex justify-content-center" style="margin-left: 20px;">
+                <h6 class="text-secondary">Ngày đăng</h6>
+
+            </div>
+            <div class="col-md-2 d-flex justify-content-center">
+                <h6 class="text-secondary ">Ngày hết hạn</h6>
+            </div>
+            <div class="col-md-2 d-flex justify-content-center">
+                <h6 class=" text-secondary">Mã tin</h6>
+            </div>
+            <div class="col-md-2 d-flex justify-content-center">
+                <h6 class=" text-secondary">Loại tin</h6>
+            </div>
+        </div>
+        <div class="information row mb-4">
+            <div class="col-md-2"></div>
+            <div class="col-md-2 d-flex justify-content-center" style="margin-left: 20px;">
+                <h6 th:text="${property.postInformation.datePost}" class=" fw-bold ">30/4/2025</h6>
+
+            </div>
+            <div class="col-md-2 d-flex justify-content-center">
+                <h6 th:text="${property.postInformation.dateEnd}" class=" fw-bold ">30/4/2025</h6>
+            </div>
+            <div class="col-md-2 d-flex justify-content-center">
+                <h6 th:text="${property.postInformation.contactId}" class="fw-bold">033157613</h6>
+            </div>
+            <div class="col-md-2 d-flex justify-content-center">
+                <h6 th:text="${property.postInformation.typePost}" class="fw-bold">15400234556</h6>
+            </div>
+            <hr class="my-2">
+        </div>
+
+    </div>
+</div>
+<!--Bản đồ-->
+<div class="container-fluid py-4" th:if="${property.propertyLongitude!=null || property.propertyLatitude!=null}">
+    <div class="card shadow-sm border-0 rounded-3 mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">
+                <i class="bi bi-geo-alt-fill me-2"></i>
+                Vị trí trên bản đồ
+            </h5>
+        </div>
+        <div class="card-body p-0">
+            <div id="map" class="rounded-bottom" style="height: 400px;"></div>
+            <input type="text" th:value="${property.propertyLongitude}" name="longitude" id="longitude" hidden>
+            <input type="text" th:value="${property.propertyLatitude}" name="latitude" id="latitude" hidden>
+        </div>
+    </div>
+</div>
+
+<!-- Lịch sử giá section -->
+<div class="container-fluid py-3">
+    <div class="row">
+        <!-- Lịch sử giá thuê -->
+        <div class="col-md-6" th:if="${property.rentalHistories.size()>0}">
+            <div class="card shadow-sm border-0 rounded-3 mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-clock-history me-2"></i>
+                        Lịch sử giá thuê
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                            <tr>
+                                <th scope="col">Ngày đăng</th>
+                                <th scope="col">Giá</th>
+                                <th scope="col">Trạng thái</th>
+                                <th scope="col">Nguồn</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="item:${property.rentalHistories}">
+                                <td th:text="${item.createdAt}">01/01/2025</td>
+                                <td th:if="${property.propertyPrice>1000000000}" th:text="${item.rentalPrice/1000000000+' tỷ'}" class="text-primary fw-medium">2.5 tỷ</td>
+                                <td th:if="${property.propertyPrice<1000000000}" th:text="${item.rentalPrice/100000000+' triệu'}" class="text-primary fw-medium">25 triệu</td>
+                                <td><span th:text="${item.status}" class="badge bg-success">Đang cho thuê</span></td>
+                                <td th:text="${item.source}">batdongsan.com.vn</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lịch sử giá bán -->
+        <div class="col-md-6" th:if="${property.salesHistories.size()>0}">
+            <div class="card shadow-sm border-0 rounded-3 mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-graph-up-arrow me-2"></i>
+                        Lịch sử giá bán
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                            <tr>
+                                <th scope="col">Ngày đăng</th>
+                                <th scope="col">Giá</th>
+                                <th scope="col">Trạng thái</th>
+                                <th scope="col">Nguồn</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="item:${property.salesHistories}">
+                                <td th:text="${item.createDate}">01/01/2025</td>
+                                <td th:if="${property.propertyPrice>1000000000}" th:text="${item.price/1000000000+' tỷ'}" class="text-primary fw-medium">2.5 tỷ</td>
+                                <td th:if="${property.propertyPrice<1000000000}" th:text="${item.price/100000000+' triệu'}" class="text-primary fw-medium">25 triệu</td>
+                                <td><span th:text="${item.status}" class="badge bg-success">Đang bán</span></td>
+                                <td th:text="${item.source}">batdongsan.com.vn</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Gợi ý cho bạn section -->
+<div class="container-fluid py-3">
+    <div class="card shadow-sm border-0 rounded-3 mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">
+                <i class="bi bi-lightbulb-fill me-2"></i>
+                Gợi ý cho bạn
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="row" th:if="${randomProperty != null && !randomProperty.isEmpty()}">
+                <div th:each="item:${randomProperty}" class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="card h-100 property-card border-0 shadow-sm hover-scale">
+                        <a th:href="@{/listing/listing-info/{id}(id=${item.propertyId})}" class="text-decoration-none">
+                            <div class="position-relative">
+                                <img class="card-img-top" style="height: 180px; object-fit: cover;" th:src="${item.listImages.get(0).imageUrl}" alt="Bất động sản">
+                                <div class="position-absolute bottom-0 end-0 p-2">
+                                    <span class="badge bg-primary" th:if="${item.propertyPrice>1000000000}" th:text="${item.propertyPrice/1000000000}+' tỷ'">4.1 tỷ</span>
+                                    <span class="badge bg-primary" th:if="${item.propertyPrice<1000000000}" th:text="${item.propertyPrice/100000000}+' triệu'">800 triệu</span>
+                                </div>
+                            </div>
+                        </a>
+                        <div class="card-body">
+                            <a th:href="@{/listing/listing-info/{id}(id=${item.propertyId})}" class="text-decoration-none">
+                                <h6 class="card-title text-dark property-title" th:text="${item.propertyTitle}" data-bs-toggle="tooltip" data-bs-placement="top" th:title="${item.propertyTitle}">Chi 10 tỷ có nhà ở Long Biên</h6>
+                            </a>
+                            <div class="d-flex justify-content-between align-items-center mt-2">
+                                <span class="text-primary fw-bold" th:text="${item.squareMeters}+' m²'">30 m²</span>
+                                <div class="small text-muted">
+                                    <i class="bi bi-geo-alt"></i>
+                                    <span th:if="${!item.address.district.split(',')[0].equals(property.address.province.split(',')[0])}" th:text="${item.address.district.split(',')[0]+','}">Long Biên,</span>
+                                    <span th:text="${item.address.province.split(',')[0]}">Hà Nội</span>
+                                    <span th:if="${item.address.province.startsWith(',')}" th:text="${item.address.province.split(',')[1]}">Hà Nội</span>
+                                </div>
+                            </div>
+                            <div class="mt-2 small text-muted" th:text="'Đăng ngày '+${item.postInformation.datePost}">Đăng hôm nay</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Lịch sử đã xem section -->
+<div class="container-fluid py-3" th:if="${historySize>0}">
+    <div class="card shadow-sm border-0 rounded-3 mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">
+                <i class="bi bi-clock-history me-2"></i>
+                Tin bạn đã xem
+            </h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="position-relative px-3 py-3">
+                <button class="carousel-control-prev position-absolute top-50 start-0 translate-middle-y bg-primary rounded-circle" id="history-prev" style="width: 40px; height: 40px; z-index: 10;">
+                    <i class="bi bi-chevron-left text-white"></i>
+                </button>
+
+                <div class="history-carousel overflow-hidden">
+                    <div class="row flex-nowrap" id="history-items">
+                        <div th:each="item : ${historyListing}" class="col-lg-3 col-md-4 col-sm-6 px-2">
+                            <div class="card h-100 property-card border-0 shadow-sm hover-scale">
+                                <a th:href="@{/listing/listing-info/{id}(id=${item.propertyId})}" class="text-decoration-none">
+                                    <div class="position-relative">
+                                        <img class="card-img-top" style="height: 180px; object-fit: cover;" th:src="${item.listImages.get(0).imageUrl}" alt="Bất động sản">
+                                        <div class="position-absolute bottom-0 end-0 p-2">
+                                            <span class="badge bg-primary" th:if="${item.propertyPrice>1000000000}" th:text="${item.propertyPrice/1000000000}+' tỷ'">4.1 tỷ</span>
+                                            <span class="badge bg-primary" th:if="${item.propertyPrice<1000000000}" th:text="${item.propertyPrice/100000000}+' triệu'">800 triệu</span>
+                                        </div>
+                                    </div>
+                                </a>
+                                <div class="card-body">
+                                    <a th:href="@{/listing/listing-info/{id}(id=${item.propertyId})}" class="text-decoration-none">
+                                        <h6 class="card-title text-dark property-title" th:text="${item.propertyTitle}" data-bs-toggle="tooltip" data-bs-placement="top" th:title="${item.propertyTitle}">Chi 10 tỷ có nhà ở Long Biên</h6>
+                                    </a>
+                                    <div class="d-flex justify-content-between align-items-center mt-2">
+                                        <span class="text-primary fw-bold" th:text="${item.squareMeters}+' m²'">30 m²</span>
+                                        <div class="small text-muted">
+                                            <i class="bi bi-geo-alt"></i>
+                                            <span th:if="${!item.address.district.split(',')[0].equals(property.address.province.split(',')[0])}" th:text="${item.address.district.split(',')[0]+','}">Long Biên,</span>
+                                            <span th:text="${item.address.province.split(',')[0]}">Hà Nội</span>
+                                            <span th:if="${item.address.province.startsWith(',')}" th:text="${item.address.province.split(',')[1]}">Hà Nội</span>
+                                        </div>
+                                    </div>
+                                    <div class="mt-2 small text-muted" th:text="'Đăng ngày '+${item.postInformation.datePost}">Đăng hôm nay</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="carousel-control-next position-absolute top-50 end-0 translate-middle-y bg-primary rounded-circle" id="history-next" style="width: 40px; height: 40px; z-index: 10;">
+                    <i class="bi bi-chevron-right text-white"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<th:block th:insert="~{ home/footer :: footer}"></th:block>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.min.js"></script>
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+        referrerpolicy="no-referrer"></script>
+<script th:src="@{/access/js/apiprovince.js}"></script>
+<script>
+    let currentIndex = 0;
+    const visibleThumbnails = 5;
+    const thumbnailWidth = 145;
+    function changeImage(element) {
+        document.getElementById('main-image').src = element.src;
+
+        // Add active class to selected thumbnail
+        const thumbnails = document.querySelectorAll('.thumbnails img');
+        thumbnails.forEach(img => {
+            img.style.border = '2px solid transparent';
+        });
+        element.style.border = '2px solid var(--primary-color)';
+    }
+
+    function scrollThumbnails(direction) {
+        const thumbnailsContainer = document.querySelector('.thumbnails');
+        const scrollAmount = direction * 150;
+        thumbnailsContainer.style.transform = `translateX(${-scrollAmount}px)`;
+
+        // Add smooth scrolling behavior
+        thumbnailsContainer.scrollLeft += scrollAmount;
+    }
+
+    // Copy phone number functionality
+    document.getElementById('copyButton').addEventListener('click', function() {
+        const phoneNumberText = document.getElementById('phoneNumber').textContent;
+        const phoneNumber = phoneNumberText.replace('Liên hệ: ', '');
+
+        navigator.clipboard.writeText(phoneNumber).then(function() {
+            const notification = document.getElementById('notification');
+            notification.style.display = 'block';
+
+            setTimeout(function() {
+                notification.style.display = 'none';
+            }, 2000);
+        });
+    });
+
+    // Initialize - set first thumbnail as active
+    window.onload = function() {
+        if (document.querySelector('.thumbnails img')) {
+            document.querySelector('.thumbnails img').style.border = '2px solid var(--primary-color)';
+        }
+    };
+    function scrollThumbnails(direction) {
+        const thumbnails = document.querySelector('.thumbnails');
+        const totalThumbnails = thumbnails.children.length;
+
+
+        currentIndex += direction;
+
+
+        if (currentIndex < 0) currentIndex = 0;
+        if (currentIndex > totalThumbnails - visibleThumbnails) currentIndex = totalThumbnails - visibleThumbnails;
+
+
+        const offset = -currentIndex * thumbnailWidth;
+
+        thumbnails.style.transform = `translateX(${offset}px)`;
+
+        document.querySelector('.prev-btn').disabled = currentIndex === 0;
+        document.querySelector('.next-btn').disabled = currentIndex === totalThumbnails - visibleThumbnails;
+    }
+
+    function changeImage(thumbnail) {
+        const mainImage = document.getElementById("main-image");
+        mainImage.src = thumbnail.src;
+    }
+
+    scrollThumbnails(0);
+</script>
+
+<script>
+    function scrollHorizontal(direction) {
+        const container = document.getElementById("property-list");
+        const scrollAmount = 300;
+        container.scrollLeft += direction * scrollAmount;
+    }
+
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+
+        // History Carousel Navigation
+        const historyCarousel = document.querySelector('.history-carousel');
+        const historyItems = document.getElementById('history-items');
+        const prevBtn = document.getElementById('history-prev');
+        const nextBtn = document.getElementById('history-next');
+
+        if (historyCarousel && historyItems && prevBtn && nextBtn) {
+            let itemWidth = historyCarousel.offsetWidth / 4; // Show 4 items in a row by default
+
+            // Responsive item width
+            function updateItemWidth() {
+                if (window.innerWidth < 576) { // xs
+                    itemWidth = historyCarousel.offsetWidth;
+                } else if (window.innerWidth < 768) { // sm
+                    itemWidth = historyCarousel.offsetWidth / 2;
+                } else if (window.innerWidth < 992) { // md
+                    itemWidth = historyCarousel.offsetWidth / 3;
+                } else { // lg and above
+                    itemWidth = historyCarousel.offsetWidth / 4;
+                }
+            }
+
+            updateItemWidth();
+            window.addEventListener('resize', updateItemWidth);
+
+            prevBtn.addEventListener('click', function() {
+                historyCarousel.scrollLeft -= itemWidth;
+            });
+
+            nextBtn.addEventListener('click', function() {
+                historyCarousel.scrollLeft += itemWidth;
+            });
+        }
+    });
+    document.getElementById('copyButton').addEventListener('click', function () {
+        var phoneNumber = document.getElementById('phoneNumber').innerText.replace('Liên hệ: ', '');
+
+        var input = document.createElement('input');
+        input.value = phoneNumber;
+        document.body.appendChild(input);
+
+        input.select();
+        document.execCommand('copy');
+        document.body.removeChild(input);
+        var notification = document.getElementById('notification');
+        notification.style.display = 'block';
+        setTimeout(function () {
+            notification.style.display = 'none';
+        }, 3000);
+    });
+</script>
+<script>
+    const apiKey = 'ZJrUrOf5fwOvZxzLVV4KmTPTsqhCkmvh0uVRruyY';
+    const longitude = document.getElementById('longitude');
+    const latitude = document.getElementById('latitude');
+
+
+    goongjs.accessToken = 'ZJrUrOf5fwOvZxzLVV4KmTPTsqhCkmvh0uVRruyY';
+    var map = new goongjs.Map({
+        container: 'map',
+        style: 'https://tiles.goong.io/assets/goong_map_web.json',
+        center: [longitude.value, latitude.value],
+        zoom: 15
+    });
+    map.addControl(new goongjs.FullscreenControl());
+    var marker = new goongjs.Marker()
+        .setLngLat([longitude.value, latitude.value])
+        .addTo(map);
+</script>
+</body>
+
+</html>

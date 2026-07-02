@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomeBody - Real Estate Platform</title>
+    <!-- Bootstrap CSS v5.3.2 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+          integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" th:href="@{/access/css/home.css}">
+
+</head>
+
+<body>
+<!-- Header -->
+<th:block th:insert="~{ home/header :: header}" th:if="${session.USERNAME}"></th:block>
+<th:block th:insert="~{ home/header-off :: header-off}" th:unless="${session.USERNAME}"></th:block>
+<!-- Carousel -->
+<div class="search-container">
+    <div class="container">
+        <h1 class="search-title">CÁCH TIẾP CẬN BẤT ĐỘNG SẢN NHANH NHẤT</h1>
+
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="tab-buttons">
+                    <button class="tab-btn active">Nhà đất bán</button>
+                    <button class="tab-btn">Nhà đất cho thuê</button>
+                </div>
+
+                <div class="search-box">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <div class="select-container">
+                                <select name="houseType" class="form-select search-input">
+                                    <option value="" selected>Loại nhà đất</option>
+                                    <option value="1">Tất cả nhà đất</option>
+                                    <option value="2">Căn hộ chung cư</option>
+                                    <option value="3">Nhà riêng</option>
+                                    <option value="4">Nhà biệt thự</option>
+                                    <option value="5">Nhà mặt phố</option>
+                                    <option value="6">Nhà trọ/Phòng trọ</option>
+                                    <option value="7">Đất nền</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <input name="searchKey" type="text" class="form-control search-input" placeholder="Nhập địa điểm hoặc từ khóa (Ví dụ: Vinhomes...)">
+                        </div>
+                        <div class="col-md-3">
+                            <button type="submit" class="btn search-btn w-100">
+                                <i class="fas fa-search me-2"></i> Tìm kiếm
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3 g-3">
+                        <div class="col-md-3">
+                            <div class="select-container">
+                                <select name="city" id="city" class="form-select search-input">
+                                    <option value="">Tỉnh/thành phố</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="select-container">
+                                <select name="district" id="district" class="form-select search-input">
+                                    <option value="">Quận/huyện</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="select-container">
+                                <select name="sqmtRange" class="form-select search-input">
+                                    <option value="1">Diện tích</option>
+                                    <option value="2">Dưới 30 m²</option>
+                                    <option value="3">30 - 50 m²</option>
+                                    <option value="4">50 - 80 m²</option>
+                                    <option value="5">80 - 100 m²</option>
+                                    <option value="6">100 - 150 m²</option>
+                                    <option value="7">150 - 200 m²</option>
+                                    <option value="8">200 - 250 m²</option>
+                                    <option value="9">250 - 300 m²</option>
+                                    <option value="10">300 - 500 m²</option>
+                                    <option value="11">Trên 500 m²</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="select-container">
+                                <select name="rangePrice" class="form-select search-input">
+                                    <option value="1">Giá</option>
+                                    <option value="2">Dưới 500 triệu</option>
+                                    <option value="3">500 - 800 triệu</option>
+                                    <option value="4">800 triệu - 1 tỷ</option>
+                                    <option value="5">1 - 2 tỷ</option>
+                                    <option value="6">2 - 3 tỷ</option>
+                                    <option value="7">3 - 5 tỷ</option>
+                                    <option value="8">5 - 7 tỷ</option>
+                                    <option value="9">7 - 10 tỷ</option>
+                                    <option value="10">10 - 20 tỷ</option>
+                                    <option value="11">20 - 30 tỷ</option>
+                                    <option value="12">30 - 40 tỷ</option>
+                                    <option value="13">Trên 40 tỷ</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hidden form to preserve all backend functionality -->
+                    <form th:action="@{/home/searchForm}" method="get" id="searchForm" style="display: none;">
+                        <input name="optionType" type="radio" value="sell" checked>
+                        <input name="optionType" type="radio" value="rent">
+                        <input name="city" type="hidden">
+                        <input name="district" type="hidden">
+                        <input name="ward" type="hidden">
+                        <input name="houseType" type="hidden">
+                        <input name="rangePrice" type="hidden">
+                        <input name="sqmtRange" type="hidden">
+                        <input name="searchKey" type="hidden">
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="property-icons">
+            <a href="#" class="property-type">
+                <div class="icon-circle">
+                    <i class="fas fa-building"></i>
+                </div>
+                <span>Căn hộ</span>
+            </a>
+            <div class="divider"></div>
+            <a href="#" class="property-type">
+                <div class="icon-circle">
+                    <i class="fas fa-home"></i>
+                </div>
+                <span>Biệt thự</span>
+            </a>
+            <div class="divider"></div>
+            <a href="#" class="property-type">
+                <div class="icon-circle">
+                    <i class="fas fa-city"></i>
+                </div>
+                <span>Chung cư</span>
+            </a>
+            <div class="divider"></div>
+            <a href="#" class="property-type">
+                <div class="icon-circle">
+                    <i class="fas fa-store"></i>
+                </div>
+                <span>Nhà phố</span>
+            </a>
+            <div class="divider"></div>
+            <a href="#" class="property-type">
+                <div class="icon-circle">
+                    <i class="fas fa-briefcase"></i>
+                </div>
+                <span>Văn phòng</span>
+            </a>
+            <div class="divider"></div>
+            <a href="#" class="property-type">
+                <div class="icon-circle">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <span>Cửa hàng</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Locations section -->
+<section class="container mt-5">
+    <h2 class="section-title text-center mb-4">Các dự án đã triển khai tại một số thành phố</h2>
+
+    <div class="row g-4">
+        <!-- Hà Nội -->
+        <div class="col-md-6 col-lg-4">
+            <a th:href="@{/home/searchCity(city=${'Hà Nội'})}" class="text-decoration-none">
+                <div class="location-card position-relative rounded overflow-hidden h-100">
+                    <img th:src="@{/access/image/hn.jpg}" class="img-fluid w-100" alt="Hà Nội">
+                    <div class="overlay position-absolute bottom-0 start-0 p-3 w-100 text-white">
+                        <h4 class="mb-0">HÀ NỘI</h4>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Đà Nẵng -->
+        <div class="col-md-6 col-lg-4">
+            <a th:href="@{/home/searchCity(city=${'Đà Nẵng'})}" class="text-decoration-none">
+                <div class="location-card position-relative rounded overflow-hidden h-100">
+                    <img th:src="@{/access/image/danang.png}" class="img-fluid w-100" alt="Đà Nẵng">
+                    <div class="overlay position-absolute bottom-0 start-0 p-3 w-100 text-white">
+                        <h4 class="mb-0">ĐÀ NẴNG</h4>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Nghệ An -->
+        <div class="col-md-6 col-lg-4">
+            <a th:href="@{/home/searchCity(city=${'Nghệ An'})}" class="text-decoration-none">
+                <div class="location-card position-relative rounded overflow-hidden h-100">
+                    <img th:src="@{/access/image/nghean.png}" class="img-fluid w-100" alt="Nghệ An">
+                    <div class="overlay position-absolute bottom-0 start-0 p-3 w-100 text-white">
+                        <h4 class="mb-0">NGHỆ AN</h4>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Hải Phòng -->
+        <div class="col-md-6 col-lg-4">
+            <a th:href="@{/home/searchCity(city=${'Hải Phòng'})}" class="text-decoration-none">
+                <div class="location-card position-relative rounded overflow-hidden h-100">
+                    <img th:src="@{/access/image/hpcity.png}" class="img-fluid w-100" alt="Hải Phòng">
+                    <div class="overlay position-absolute bottom-0 start-0 p-3 w-100 text-white">
+                        <h4 class="mb-0">HẢI PHÒNG</h4>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- TP. Hồ Chí Minh -->
+        <div class="col-md-6 col-lg-4">
+            <a th:href="@{/home/searchCity(city=${'Hồ Chí Minh'})}" class="text-decoration-none">
+                <div class="location-card position-relative rounded overflow-hidden h-100">
+                    <img th:src="@{/access/image/HCMCity.png}" class="img-fluid w-100" alt="TP. Hồ Chí Minh">
+                    <div class="overlay position-absolute bottom-0 start-0 p-3 w-100 text-white">
+                        <h4 class="mb-0">TP. HỒ CHÍ MINH</h4>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <a th:href="@{/home/searchCity(city=${'Cần Thơ'})}" class="text-decoration-none">
+                <div class="location-card position-relative rounded overflow-hidden h-100">
+                    <img th:src="@{/access/image/cantho.png}" class="img-fluid w-100" alt="TP. Hồ Chí Minh">
+                    <div class="overlay position-absolute bottom-0 start-0 p-3 w-100 text-white">
+                        <h4 class="mb-0">TP. Cần Thơ</h4>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+
+
+<!-- Featured properties -->
+<section class="container-fluid py-5 bg-light mt-5">
+    <div class="container">
+        <h2 class="section-title">Bất động sản dành cho bạn</h2>
+        <div class="row">
+            <div th:each="property:${randomProperty}" class="col-md-6 col-lg-3 mb-4">
+                <a th:if="${property.user != null}" th:href="@{/listing/listing-info/{id}(id=${property.propertyId})}" class="text-decoration-none">
+                    <div class="property-card">
+                        <div class="position-relative">
+                            <img th:src="${property.listImages != null && !property.listImages.isEmpty() ? property.listImages[0].imageUrl : 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80'}" class="img-fluid w-100" alt="Property">
+                            <span class="position-absolute top-0 end-0 bg-primary text-white px-2 py-1 m-2 rounded">
+                                    <i class="fas fa-home me-1"></i> Bán
+                                </span>
+                        </div>
+                        <div class="p-3">
+                            <h5 class="text-truncate" th:text="${property.propertyTitle}">Chi 10 tỷ có nhà ở long biên</h5>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="property-price" th:if="${property.propertyPrice>1000000000}" th:text="${#numbers.formatDecimal(property.propertyPrice / 1000000000, 1, 2)} + ' tỷ'">4.1 tỷ</span>
+                                <span class="property-price" th:if="${property.propertyPrice<1000000000}" th:text="${#numbers.formatDecimal(property.propertyPrice / 1000000, 1, 2)} + ' triệu'">800 triệu</span>
+                                <span class="badge bg-secondary" th:text="${property.squareMeters}+' m²'">30 m²</span>
+                            </div>
+                            <div class="property-meta" th:if="${property.address != null}">
+                                <i class="fas fa-map-marker-alt me-1"></i>
+                                <span th:if="${property.address.district != null && property.address.province != null && !property.address.district.split(',')[0].equals(property.address.province.split(',')[0])}" th:text="${property.address.district.split(',')[0]+','}">Long biên,</span>
+                                <span th:if="${property.address.province != null}" th:text="${property.address.province.split(',')[0]}">Hà Nội</span>
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-between">
+                                <small class="text-muted" th:text="'Đăng ngày ' + ${property.postInformation != null ? property.postInformation.datePost : 'Hôm nay'}">Đăng hôm nay</small>
+                                <small><i class="far fa-eye me-1"></i> 230</small>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <a th:href="@{/home/all-listings}" class="btn btn-outline-primary px-4 py-2">Xem thêm bất động sản</a>
+        </div>
+    </div>
+</section>
+
+<!-- News section -->
+<section class="news-section py-5 bg-light">
+                <div class="container">
+                    <h2 class="text-uppercase text-center fw-bold mb-4 position-relative">
+                        <span class="position-relative pb-2 border-bottom border-3 border-primary">Tin Tức Nổi Bật</span>
+                    </h2>
+
+                    <div class="row g-4">
+                        <!-- Main featured news card -->
+                        <div class="col-lg-6 col-md-12 mb-4">
+                            <a href="https://baodautu.vn/batdongsan/phan-khuc-thap-tang-noi-do-dau-la-su-lua-chon-hoan-hao-d280880.html"
+                               class="card h-100 shadow-sm text-decoration-none news-card overflow-hidden transition">
+                                <div class="position-relative">
+                                    <img src="https://tl.cdnchinhphu.vn/thumb_w/640/344445545208135680/2024/3/8/bat-dong-san-ha-noi-17098932325111635522558.jpg"
+                                         class="card-img-top" alt="Thị trường chung cư tại Hà Nội">
+                                    <div class="position-absolute top-0 start-0 bg-primary text-white px-3 py-1 m-3 rounded-pill">
+                                        <small>Bất Động sản</small>
+                                    </div>
+                                </div>
+                                <div class="card-body p-4">
+                                    <h4 class="card-title text-dark fw-bold">Phân khúc thấp tầng nội đô: Đâu là sự lựa chọn hoàn hảo?</h4>
+                                    <p class="card-text text-muted">
+                                        Thị trường bất động sản Hà Nội đang bước vào chu kỳ tăng trưởng mới. Trong khi nhu cầu tìm kiếm các sản phẩm thấp tầng nội đô tăng mạnh thì nguồn cung ngày càng khan hiếm.
+                                        Qúy I/2025, thị trường BĐS Hà Nội chứng kiến sự trỗi dậy mạnh mẽ ở phân khúc thấp tầng sơ cấp. Theo báo cáo thị trường của Hội Môi giới Bất động sản Việt Nam, so với quý trước phân khúc thấp tầng ghi nhận mức hấp thụ lên đến 52%, mức độ quan tâm tăng 75%. Tuy nhiên, phần lớn nguồn cung mới lại đến từ các khu vực vùng ven, xa trung tâm còn khu vực nội đô thì hoàn toàn thiếu hụt.
+                                    </p>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <small class="text-muted">08/05/2025</small>
+                                        <span class="text-primary">Đọc tiếp <i class="fas fa-arrow-right ms-1"></i></span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- Secondary news column -->
+                        <div class="col-lg-6 col-md-14">
+                            <div class="row g-4">
+                                <!-- News item 1 -->
+                                <div class="col-14">
+                                    <a href="https://thanglong.chinhphu.vn/can-hieu-dung-de-duoc-huong-chinh-sach-khi-mua-nha-o-xa-hoi-tai-ha-noi-103250508181756247.htm"
+                                       class="card h-100 shadow-sm news-card-sm text-decoration-none transition">
+                                        <div class="row g-0">
+                                            <div class="col-md-4 col-sm-5">
+                                                <img src="https://tl.cdnchinhphu.vn/thumb_w/640/344445545208135680/2025/5/8/82-1746702901869293579322.jpg"
+                                                     class="img-fluid rounded-start h-100 w-100 object-fit-cover">
+                                            </div>
+                                            <div class="col-md-8 col-sm-7">
+                                                <div class="card-body">
+                                                    <h5 class="card-title text-dark fw-bold">Cần hiểu đúng để được hưởng chính sách khi mua nhà ở xã hội tại Hà Nội</h5>
+                                                    <p class="card-text text-muted">(Chinhphu.vn) - Nhu cầu về nhà ở xã hội tại Hà Nội hiện nay đang là vấn đề "nóng" thu hút sự quan tâm của nhiều người dân. Việc hiểu đúng và tuân thủ các quy định liên quan đến mua nhà ở xã hội sẽ giúp người dân tận dụng tối đa các quyền lợi của mình.</p>
+                                                    <small class="text-primary">Đọc tiếp <i class="fas fa-arrow-right ms-1"></i></small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+
+                                <!-- News item 2 -->
+                                <div class="col-14">
+                                    <a href="https://thanglong.chinhphu.vn/ha-noi-de-xuat-thi-diem-mo-rong-loai-dat-lam-nha-thuong-mai-103250505155313031.htm"
+                                       class="card h-100 shadow-sm news-card-sm text-decoration-none transition">
+                                        <div class="row g-0">
+                                            <div class="col-md-4 col-sm-5">
+                                                <img src="https://tl.cdnchinhphu.vn/344445545208135680/2025/5/5/52-17464350419341067460884.jpg"
+                                                     class="img-fluid rounded-start h-100 w-100 object-fit-cover">
+                                            </div>
+                                            <div class="col-md-8 col-sm-7">
+                                                <div class="card-body">
+                                                    <h5 class="card-title text-dark fw-bold">Hà Nội đề xuất thí điểm mở rộng loại đất làm nhà thương mại</h5>
+                                                    <p class="card-text text-muted">(Chinhphu.vn) - 157 khu đất với tổng diện tích hơn 860 ha được TP. Hà Nội đề xuất thí điểm làm dự án nhà thương mại qua thỏa thuận nhận quyền sử dụng đất.</p>
+                                                    <small class="text-primary">Đọc tiếp <i class="fas fa-arrow-right ms-1"></i></small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+
+                                <!-- News item 3 -->
+                                <div class="col-14">
+                                    <a href="https://vnexpress.net/nguoi-tre-chun-buoc-mua-nha-vung-ven-vi-gia-dat-4883192.html"
+                                       class="card h-100 shadow-sm news-card-sm text-decoration-none transition">
+                                        <div class="row g-0">
+                                            <div class="col-md-4 col-sm-5">
+                                                <img src="https://i1-vnexpress.vnecdn.net/2025/05/09/dji-0534-jpg-1746747513-174674-5819-9536-1746751100.jpg?w=680&h=0&q=100&dpr=1&fit=crop&s=xicpaA2juTUieNmxHNJxTA"
+                                                     class="img-fluid rounded-start h-100 w-100 object-fit-cover" alt="Chính sách đất đai mới">
+                                            </div>
+                                            <div class="col-md-8 col-sm-7">
+                                                <div class="card-body">
+                                                    <h5 class="card-title text-dark fw-bold">Người trẻ chùn bước mua nhà vùng ven vì giá đắt</h5>
+                                                    <p class="card-text text-muted">Người trẻ - nhóm có nhu cầu mua nhà chủ lực - khó tìm nơi an cư khi rổ hàng chung cư huyện ven Hà Nội đội giá hơn 50 triệu đồng một m2.</p>
+                                                    <small class="text-primary">Đọc tiếp <i class="fas fa-arrow-right ms-1"></i></small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+
+                                <!-- News item 4 -->
+                                <div class="col-12">
+                                    <a href="https://vnexpress.net/mat-bang-han-thuyen-gia-thue-750-trieu-dong-co-khach-moi-sau-8-thang-starbucks-roi-di-4882674.html"
+                                       class="card h-100 shadow-sm news-card-sm text-decoration-none transition">
+                                        <div class="row g-0">
+                                            <div class="col-md-4 col-sm-5">
+                                                <img src="https://i1-vnexpress.vnecdn.net/2025/05/07/HT3-1746595114-3627-1746595694.jpg?w=0&h=0&q=100&dpr=1&fit=crop&s=jaVmsbwiPp9b4tC3gN5_0w"
+                                                     class="img-fluid rounded-start h-100 w-100 object-fit-cover" alt="Đất cho thuê ở Tp Hồ CHí Minh">
+                                            </div>
+                                            <div class="col-md-8 col-sm-7">
+                                                <div class="card-body">
+                                                    <h5 class="card-title text-dark fw-bold">Mặt bằng Hàn Thuyên giá thuê 750 triệu đồng có khách mới sau 8 tháng Starbucks rời đi</h5>
+                                                    <p class="card-text text-muted">Tám tháng sau khi Starbucks trả mặt bằng, địa chỉ 11-13 Hàn Thuyên với giá chào thuê từng lên đến 750 triệu đồng mỗi tháng vừa tìm được khách mới.
+
+                                                        Vài ngày qua, ngôi nhà tại 11-13 Hàn Thuyên (quận 1) - nơi từng là địa điểm kinh doanh của cửa hàng cao cấp duy nhất thuộc Starbucks tại TP HCM - đã được rào lại thi công.</p>
+                                                    <small class="text-primary">Đọc tiếp <i class="fas fa-arrow-right ms-1"></i></small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- "Xem thêm" button -->
+                    <div class="text-center mt-4">
+                        <a href="#" class="btn btn-outline-primary px-4 py-2 rounded-pill">Xem thêm tin tức <i class="fas fa-angle-right ms-2"></i></a>
+                    </div>
+                </div>
+</section>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<th:block th:insert="~{ home/footer :: footer}"></th:block>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.min.js"></script>
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+        referrerpolicy="no-referrer"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Tab functionality
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const optionTypeInputs = document.querySelectorAll('input[name="optionType"]');
+
+        tabBtns.forEach((btn, index) => {
+            btn.addEventListener('click', function() {
+                tabBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                optionTypeInputs[index].checked = true;
+            });
+        });
+
+        // Sync visible select elements with hidden form
+        const selectElements = document.querySelectorAll('.search-box select');
+        const hiddenInputs = document.querySelectorAll('#searchForm input[type="hidden"]');
+
+        selectElements.forEach(select => {
+            select.addEventListener('change', function() {
+                const name = this.getAttribute('name');
+                const hiddenInput = document.querySelector(`#searchForm input[name="${name}"]`);
+                if (hiddenInput) {
+                    hiddenInput.value = this.value;
+                }
+            });
+        });
+
+        // Handle search button
+        const searchBtn = document.querySelector('.search-btn');
+        searchBtn.addEventListener('click', function() {
+            // Update hidden form with visible form values
+            document.querySelector('#searchForm input[name="searchKey"]').value =
+                document.querySelector('input[name="searchKey"]').value;
+
+            // Submit the form
+            document.getElementById('searchForm').submit();
+        });
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+        const btnActive = document.querySelector('.btn-active');
+        const btnReActive = document.querySelector('.btn-re-active');
+        const inputActive = btnActive.querySelector('input');
+        const inputReActive = btnReActive.querySelector('input');
+
+        function activateButton(clickedButton, otherButton, clickedInput, otherInput) {
+            clickedButton.classList.add('active');
+            otherButton.classList.remove('active');
+            clickedInput.checked = true;  // Đánh dấu input tương ứng là checked
+            otherInput.checked = false;   // Bỏ chọn input còn lại
+        }
+
+        btnActive.addEventListener('click', function () {
+            activateButton(btnActive, btnReActive, inputActive, inputReActive);
+        });
+
+        btnReActive.addEventListener('click', function () {
+            activateButton(btnReActive, btnActive, inputReActive, inputActive);
+        });
+    });
+</script>
+<script th:src="@{/access/js/apiprovince.js}"></script>
+</body>
+</html>

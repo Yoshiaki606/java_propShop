@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:latest
+    container_name: realestate-db
+    cap_add:
+      - SYS_NICE
+    restart: always
+    environment:
+      - MYSQL_DATABASE=security_db
+      - MYSQL_ROOT_PASSWORD=abc123
+      - MYSQL_USER=springstudent
+      - MYSQL_PASSWORD=springstudent
+    ports:
+      - '3307:3306'
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  redis:
+    image: redis:alpine
+    container_name: realestate-redis
+    restart: always
+    ports:
+      - '6379:6379'
+
+  eureka-server:
+    build:
+      context: ./eureka-server
+    container_name: eureka-server
+    restart: always
+    ports:
+      - '8761:8761'
+
+  auth-service:
+    build:
+      context: ./auth-service
+    container_name: auth-service
+    restart: always
+    ports:
+      - '8081:8081'
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/security_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      - SPRING_DATA_REDIS_HOST=redis
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - SPRING_SERVER_FORWARD_HEADERS_STRATEGY=framework
+    depends_on:
+      - db
+      - redis
+      - eureka-server
+
+  realestate-monolith:
+    build:
+      context: ./realestate-monolith
+    container_name: realestate-monolith
+    restart: always
+    ports:
+      - '8080:8080'
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/security_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      - SPRING_DATA_REDIS_HOST=redis
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - CLOUDINARY_URL=cloudinary://424292436519495:LAkXvRDHPGv2Qy2_gQibk5FZIJM@dsj6sba9f
+      - SPRING_SERVER_FORWARD_HEADERS_STRATEGY=framework
+    depends_on:
+      - db
+      - eureka-server
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+    container_name: api-gateway
+    restart: always
+    ports:
+      - '8000:8000'
+    environment:
+      - SPRING_DATA_REDIS_HOST=redis
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    depends_on:
+      - redis
+      - eureka-server
+
+volumes:
+  mysql-data:

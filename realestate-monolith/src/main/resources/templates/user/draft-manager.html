@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Tin nháp</title>
+
+    <!-- Core Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"
+            integrity="sha512-TPh2Oxlg1zp+kz3nFA0C5vVC6leG/6mm1z9+mA81MI5eaUVqasPLO8Cuk4gMF4gUfP5etR73rgU/8PNMsSesoQ=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+          integrity="sha512-Kc323vGBEqzQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --primary-dark: #0a58ca;
+            --secondary-color: #f8f9fa;
+            --text-color: #212529;
+            --light-gray: #e9ecef;
+            --medium-gray: #dee2e6;
+            --white: #ffffff;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-gray);
+            color: var(--text-color);
+        }
+
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            background-color: var(--white);
+        }
+
+        .main-container {
+            padding-top: 80px;
+        }
+
+        .sidebar {
+            background-color: var(--white);
+            border-radius: 0.5rem;
+            box-shadow: 0 0.125rem 0.25rem var(--shadow);
+            position: sticky;
+            top: 100px;
+            height: calc(100vh - 120px);
+            overflow-y: auto;
+        }
+
+        .sidebar-section {
+            padding: 1rem;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .sidebar-section:last-child {
+            border-bottom: none;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background-color: var(--secondary-color);
+            border-radius: 0.5rem;
+        }
+
+        .account-balance {
+            background-color: var(--secondary-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .payment-code {
+            background-color: var(--white);
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+            margin: 0.5rem 0;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid var(--medium-gray);
+        }
+
+        .payment-code:hover {
+            background-color: var(--light-gray);
+        }
+
+        .sidebar-nav-item {
+            margin-bottom: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .sidebar-nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .sidebar-nav-link:hover, .sidebar-nav-link.active {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        .sidebar-nav-link i {
+            margin-right: 0.5rem;
+            width: 1.25rem;
+            text-align: center;
+        }
+
+        .sidebar-heading {
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 0.75rem 0;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar-heading i {
+            margin-right: 0.5rem;
+        }
+
+        .content-area {
+            background-color: var(--white);
+            border-radius: 0.5rem;
+            box-shadow: 0 0.125rem 0.25rem var(--shadow);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .content-header {
+            border-bottom: 1px solid var(--medium-gray);
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        .empty-state img {
+            margin-bottom: 1rem;
+            opacity: 0.7;
+        }
+
+        .property-table {
+            width: 100%;
+        }
+
+        .property-table th {
+            background-color: var(--primary-color);
+            color: var(--white);
+            font-weight: 500;
+        }
+
+        .property-img {
+            width: 120px;
+            height: 90px;
+            object-fit: cover;
+            border-radius: 0.375rem;
+        }
+
+        .property-title {
+            width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            border-color: var(--primary-dark);
+        }
+
+        .btn-outline-primary {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        @media (max-width: 991.98px) {
+            .sidebar {
+                position: relative;
+                height: auto;
+                margin-bottom: 1.5rem;
+                top: 0;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .property-table {
+                display: block;
+                width: 100%;
+                overflow-x: auto;
+            }
+
+            .property-img {
+                width: 80px;
+                height: 60px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<!-- Header placeholder -->
+<th:block th:insert="~{ home/header :: header}"></th:block>
+
+<div class="container-fluid main-container">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-lg-3 col-md-4 mb-4">
+            <div class="sidebar">
+                <!-- User Info Section -->
+                <div class="sidebar-section">
+                    <div class="user-info">
+                        <img class="rounded-circle me-2" style="object-fit: cover; width: 50px; height: 50px;"
+                             th:src="${user.images != null} ? ${user.images.imageUrl} : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'"
+                             alt="User photo">
+                        <div>
+                            <div class="fw-bold" th:text="${user.fullName}">User Name</div>
+                            <small class="text-muted" th:text="${user.email}">email@example.com</small>
+                        </div>
+                    </div>
+
+                    <!-- Account Balance -->
+                    <div class="account-balance mt-3">
+                        <h6 class="mb-3">Số dư tài khoản</h6>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>TK Chính</span>
+                            <span th:if="${user.accountBalance>10000000}"
+                                  th:text="${user.accountBalance/1000000+' triệu VNĐ'}" class="fw-bold text-primary">0 VNĐ</span>
+                            <span th:if="${user.accountBalance<10000000}" th:text="${user.accountBalance}"
+                                  class="fw-bold text-primary priceSale">0 VNĐ</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-3">
+                            <span>TK Khuyến mãi</span>
+                            <span class="priceSale">0 VNĐ</span>
+                        </div>
+
+                        <!-- Deposit Button -->
+                        <div class="d-flex justify-content-center mt-3">
+                            <a th:href="@{/payment/deposit}" class="btn btn-primary">
+                                <i class="fas fa-plus-circle me-2"></i>
+                                Nạp tiền
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Property Management -->
+                <div class="sidebar-section">
+                    <div class="sidebar-heading">
+                        <i class="fas fa-clipboard-list"></i>
+                        Quản lý bài đăng
+                    </div>
+                    <div class="sidebar-nav-item">
+                        <a th:href="@{/listing/post-address}" class="sidebar-nav-link">
+                            <i class="fas fa-plus-circle"></i>
+                            Đăng mới
+                        </a>
+                    </div>
+                    <div class="sidebar-nav-item">
+                        <a th:href="@{/user/listing-manager}" class="sidebar-nav-link">
+                            <i class="fas fa-list-check"></i>
+                            Tin đã đăng
+                        </a>
+                    </div>
+                    <div class="sidebar-nav-item">
+                        <a th:href="@{/user/listing-manager-draft}" class="sidebar-nav-link active">
+                            <i class="fas fa-file"></i>
+                            Tin nháp
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Account Management -->
+                <div class="sidebar-section">
+                    <div class="sidebar-heading">
+                        <i class="fas fa-user-gear"></i>
+                        Quản lý tài khoản
+                    </div>
+                    <div class="sidebar-nav-item">
+                        <a th:href="@{/user/payment-history}" class="sidebar-nav-link">
+                            <i class="fas fa-cash-register"></i>
+                            Lịch sử nạp tiền
+                        </a>
+                    </div>
+                    <div class="sidebar-nav-item">
+                        <a th:href="@{/user/user-info}" class="sidebar-nav-link">
+                            <i class="fas fa-gear"></i>
+                            Chỉnh sửa thông tin
+                        </a>
+                    </div>
+                    <div class="sidebar-nav-item">
+                        <a th:href="@{/user/changePassword}" class="sidebar-nav-link">
+                            <i class="fas fa-lock"></i>
+                            Đổi mật khẩu
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Membership -->
+                <div class="sidebar-section">
+                    <div class="sidebar-heading">
+                        <i class="fas fa-users"></i>
+                        Gói hội viên
+                    </div>
+                    <div class="sidebar-nav-item">
+                        <a href="#" class="sidebar-nav-link">
+                            <i class="fas fa-shopping-bag"></i>
+                            Đăng ký mua
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Help -->
+                <div class="sidebar-section">
+                    <div class="sidebar-heading">
+                        <i class="fas fa-circle-info"></i>
+                        Hướng dẫn
+                    </div>
+                    <div class="sidebar-nav-item">
+                        <a href="https://trogiup.batdongsan.com.vn/docs/dang-tin-tren-batdongsancomvn" class="sidebar-nav-link">
+                            <i class="fas fa-book"></i>
+                            Hướng dẫn sử dụng
+                        </a>
+                    </div>
+                    <div class="sidebar-nav-item">
+                        <a href="https://trogiup.batdongsan.com.vn/docs/cac-hinh-thuc-thanh-toan" class="sidebar-nav-link">
+                            <i class="fas fa-credit-card"></i>
+                            Hướng dẫn thanh toán
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-lg-9 col-md-8">
+            <div class="content-area">
+                <!-- Content Header -->
+                <div class="content-header">
+                    <h3 class="m-0">Tin nháp</h3>
+                </div>
+
+                <!-- Empty State -->
+                <div class="empty-state" th:if="${properties.isEmpty()}">
+                    <img th:src="@{/access/image/icons8-paper-64.png}" alt="" width="64" height="64">
+                    <h5 class="my-3">Không có tin đăng nào</h5>
+                    <a class="btn btn-primary" th:href="@{/listing/post-address}">
+                        <i class="fas fa-plus-circle me-2"></i>
+                        Đăng tin mới
+                    </a>
+                </div>
+
+                <!-- Property Table -->
+                <div class="table-responsive" th:if="${!properties.isEmpty()}">
+                    <table class="table table-hover property-table">
+                        <thead>
+                        <tr>
+                            <th scope="col">Mã tin</th>
+                            <th scope="col">Ảnh</th>
+                            <th scope="col">Tiêu đề</th>
+                            <th scope="col">Trạng thái</th>
+                            <th scope="col">Ngày đăng</th>
+                            <th class="text-center" scope="col">Thao tác</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="property:${properties}">
+                            <td th:text="${property.propertyId}"></td>
+                            <td>
+                                <img class="property-img" th:src="${property.listImages.get(0).imageUrl}" alt="Property Image"/>
+                            </td>
+                            <td>
+                                <h6 class="property-title" th:text="${property.propertyTitle}"></h6>
+                            </td>
+                            <td th:text="${property.payment.status}"></td>
+                            <td th:text="${property.postInformation.datePost}"></td>
+                            <td class="text-center">
+                                <div class="btn-group">
+                                    <a th:href="@{/payment/payment/{id}(id=${property.propertyId})}" class="btn btn-success btn-sm">
+                                        <i class="fas fa-dollar-sign me-1"></i> Thanh toán
+                                    </a>
+                                    <a th:href="@{/user/update-post/{id}(id=${property.propertyId})}" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-edit me-1"></i> Chỉnh sửa
+                                    </a>
+                                    <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal"
+                                            th:data-bs-target="'#deleteModal-' + ${property.propertyId}">
+                                        <i class="fas fa-trash me-1"></i> Xóa
+                                    </button>
+                                </div>
+
+                                <!-- Delete Modal -->
+                                <div class="modal fade" th:id="'deleteModal-' + ${property.propertyId}" tabindex="-1"
+                                     th:aria-labelledby="'deleteModalLabel-' + ${property.propertyId}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" th:id="'deleteModalLabel-' + ${property.propertyId}">Xóa bài đăng</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p>Bạn có chắc chắn muốn xóa bài đăng này không?</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                                <a th:href="@{/user/delete-post/{id}(id=${property.propertyId})}"
+                                                   class="btn btn-danger">Xóa</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer placeholder -->
+<th:block th:insert="~{ home/footer :: footer}"></th:block>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script>
+
+<script>
+    // Price formatting
+    document.addEventListener('DOMContentLoaded', function() {
+        const priceElements = document.querySelectorAll('.priceSale');
+
+        priceElements.forEach(function(element) {
+            const value = element.textContent.trim();
+            if (!isNaN(value) && value !== '') {
+                const formattedValue = parseInt(value).toLocaleString('vi-VN') + ' VNĐ';
+                element.textContent = formattedValue;
+            }
+        });
+    });
+</script>
+</body>
+</html>

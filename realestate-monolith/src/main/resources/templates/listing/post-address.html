@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+          integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --primary-dark: #0b5ed7;
+            --primary-light: #e8f0fe;
+            --secondary-color: #f8f9fa;
+            --accent-color: #6c757d;
+            --text-color: #212529;
+            --border-radius: 15px;
+            --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            background-color: #f9fafb;
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .main-container {
+            padding-top: 100px;
+            padding-bottom: 60px;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .step-indicator {
+            font-size: 1.1rem;
+            color: var(--accent-color);
+            margin-top: 5px;
+        }
+
+        .step-indicator strong {
+            color: var(--primary-color);
+        }
+
+        .form-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+        }
+
+        .form-card:hover {
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-title {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--primary-light);
+        }
+
+        .option-card {
+            border: 2px solid #dee2e6;
+            border-radius: 30px;
+            padding: 12px 25px;
+            transition: var(--transition);
+            cursor: pointer;
+            background-color: white;
+            height: 60px;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-card:hover {
+            border-color: var(--primary-color);
+            background-color: var(--primary-light);
+        }
+
+        .option-card.selected {
+            border-color: var(--primary-color);
+            background-color: var(--primary-light);
+        }
+
+        .option-card input[type="radio"] {
+            margin-right: 15px;
+            transform: scale(1.3);
+            accent-color: var(--primary-color);
+        }
+
+        .option-card i {
+            color: var(--primary-color);
+            margin-right: 15px;
+            font-size: 1.2rem;
+        }
+
+        .option-card span {
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        .form-control {
+            padding: 12px 20px;
+            border-radius: var(--border-radius);
+            border: 1px solid #ced4da;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: var(--accent-color);
+            margin-bottom: 8px;
+        }
+
+        .rounded-input {
+            border-radius: 30px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            border-radius: 30px;
+            padding: 10px 30px;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            border-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline-dark {
+            border-radius: 30px;
+            padding: 10px 30px;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .btn-outline-dark:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-outline-secondary {
+            border-radius: 30px;
+            padding: 10px 25px;
+            font-weight: 500;
+            transition: var(--transition);
+            background-color: white;
+        }
+
+        .btn-outline-secondary:hover {
+            background-color: var(--primary-light);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .suggestions {
+            position: absolute;
+            background: white;
+            width: 100%;
+            max-height: 300px;
+            overflow-y: auto;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            border-radius: var(--border-radius);
+            z-index: 1000;
+            display: none;
+            margin-top: 3px;
+            border: 1px solid #e9ecef;
+        }
+
+        .suggestion-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #e9ecef;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            color: var(--text-color);
+        }
+
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+
+        .suggestion-item:before {
+            content: "📍";
+            margin-right: 10px;
+            font-size: 1.1em;
+            transition: transform 0.3s ease;
+        }
+
+        .suggestion-item:hover {
+            background: var(--primary-light);
+            color: var(--primary-color);
+            padding-left: 24px;
+        }
+
+        .suggestion-item:hover:before {
+            transform: scale(1.2);
+        }
+
+        .suggestion-item:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: var(--primary-color);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .suggestion-item:hover:after {
+            transform: scaleY(1);
+        }
+
+        .address-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        /* Scrollbar customization */
+        .suggestions::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .suggestions::-webkit-scrollbar-track {
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .suggestions::-webkit-scrollbar-thumb {
+            background: #dee2e6;
+            border-radius: 8px;
+        }
+
+        .suggestions::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-color);
+        }
+
+        .location-select {
+            border: 1px solid #ced4da;
+            border-radius: var(--border-radius);
+            padding: 10px 15px;
+            width: 100%;
+            transition: var(--transition);
+        }
+
+        .location-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+
+        .province-district-ward select {
+            height: 48px;
+        }
+
+        .collapse-card {
+            border-radius: var(--border-radius);
+            background-color: white;
+            border: 1px solid #e9ecef;
+        }
+
+        .help-text {
+            color: var(--accent-color);
+            font-size: 0.9rem;
+        }
+
+        .divider-text {
+            position: relative;
+            display: flex;
+            align-items: center;
+            color: var(--accent-color);
+            margin: 20px 0;
+        }
+
+        .divider-text:before,
+        .divider-text:after {
+            content: "";
+            flex: 1;
+            border-bottom: 1px solid #dee2e6;
+            margin: 0 10px;
+        }
+
+        .alert-danger {
+            border-radius: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding-top: 80px;
+            }
+
+            .form-card {
+                padding: 20px;
+            }
+
+            .option-cards-container {
+                flex-direction: column;
+            }
+
+            .option-card {
+                width: 100% !important;
+                margin-bottom: 15px;
+            }
+
+            .province-district-ward-container {
+                flex-direction: column;
+            }
+
+            .province-district-ward {
+                width: 100% !important;
+                margin-right: 0 !important;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<th:block th:insert="~{ home/header :: header}"></th:block>
+
+<div class="container main-container">
+    <div class="page-header d-flex justify-content-between align-items-center">
+        <div>
+            <h3 class="page-title">Tạo bài đăng</h3>
+            <div class="step-indicator">
+                <strong>Bước 1:</strong> Địa chỉ bất động sản
+            </div>
+        </div>
+        <div>
+            <a th:href="@{/home/home}" class="btn btn-outline-dark">
+                <i class="fas fa-times me-2"></i>Thoát
+            </a>
+        </div>
+    </div>
+
+    <hr class="mb-4">
+
+    <div th:if="${error}" class="alert alert-danger text-center mb-4" role="alert">
+        <i class="fas fa-exclamation-circle me-2"></i> <span th:text="${error}"></span>
+    </div>
+
+    <form class="was-validated" action="#" th:action="@{/listing/address}" method="POST">
+        <div class="form-card mx-auto" style="max-width: 800px;">
+            <h5 class="card-title"><i class="fas fa-tag me-2"></i>Nhu cầu</h5>
+
+            <div class="d-flex flex-wrap justify-content-between option-cards-container">
+                <div class="option-card mb-3" style="width: 48%;">
+                    <input type="radio" value="sell" id="sell" name="option" required>
+                    <i class="fa-solid fa-tag"></i>
+                    <span>Bán</span>
+                </div>
+                <div class="option-card mb-3" style="width: 48%;">
+                    <input type="radio" value="rent" id="rent" name="option" required>
+                    <i class="fa-solid fa-key"></i>
+                    <span>Cho thuê</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-card mx-auto" style="max-width: 800px;">
+            <h5 class="card-title"><i class="fas fa-map-marker-alt me-2"></i>Địa chỉ bất động sản</h5>
+
+            <div class="address-container mb-4">
+                <label class="form-label" for="address">Địa chỉ</label>
+                <input class="form-control rounded-input shadow-sm" type="text"
+                       id="address" name="address" placeholder="Nhập địa chỉ của bạn" autocomplete="off">
+                <div id="suggestions" class="suggestions"></div>
+            </div>
+
+            <div class="grid">
+                <div class="m-2">
+                    <label class="form-label" for="city-api" hidden="hidden">Tỉnh/Thành phố</label>
+                    <input class="form-control" type="text" id="city-api" name="city"
+                           placeholder="Nhập tỉnh/thành phố" hidden="hidden">
+                </div>
+                <div class="m-2">
+                    <label class="form-label" for="district-api" hidden="hidden">Quận/Huyện</label>
+                    <input class="form-control" type="text" id="district-api"
+                           name="district" placeholder="Nhập quận/huyện" hidden="hidden">
+                </div>
+                <div class="m-2">
+                    <label class="form-label" for="ward-api" hidden="hidden">Phường/Xã</label>
+                    <input class="form-control mb-4" type="text" id="ward-api"
+                           name="ward" placeholder="Nhập phường/xã" hidden="hidden">
+                </div>
+                <input type="text" name="addressID" id="address-id-api" hidden="hidden">
+                <input type="text" name="longitude" id="longitude" hidden="hidden">
+                <input type="text" name="latitude" id="latitude" hidden="hidden">
+            </div>
+
+            <div class="help-text mb-3">
+                <p><i class="fas fa-info-circle me-2"></i>Tìm kiếm bằng cách nhập tên quận huyện, phường xã, đường phố.</p>
+            </div>
+
+            <div class="divider-text">
+                <strong>Hoặc</strong>
+            </div>
+
+            <button class="btn btn-outline-secondary shadow-sm mb-4"
+                    type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample"
+                    aria-expanded="false" aria-controls="collapseExample">
+                <i class="fas fa-list-ul me-2"></i><strong>Chọn địa chỉ</strong>
+            </button>
+
+            <div class="collapse" id="collapseExample">
+                <div class="collapse-card p-4">
+                    <div class="d-flex flex-wrap mb-3 province-district-ward-container">
+                        <div class="province-district-ward me-3 mb-3" style="width: 32%">
+                            <label class="form-label" for="city">Tỉnh/Thành phố</label>
+                            <select class="form-select location-select" name="city" id="city">
+                                <option value="">Chọn Tỉnh/Thành phố</option>
+                            </select>
+                        </div>
+                        <div class="province-district-ward me-3 mb-3" style="width: 32%">
+                            <label class="form-label" for="district">Quận/Huyện</label>
+                            <select class="form-select location-select" name="district" id="district">
+                                <option value="">Chọn Quận/Huyện</option>
+                            </select>
+                        </div>
+                        <div class="province-district-ward mb-3" style="width: 32%">
+                            <label class="form-label" for="ward">Phường/Xã</label>
+                            <select class="form-select location-select" name="ward" id="ward">
+                                <option value="">Chọn Phường/Xã</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="location" class="form-label">Địa chỉ cụ thể</label>
+                        <input type="text" value="" id="location" name="location"
+                               class="form-control rounded-input"
+                               placeholder="Số nhà, tên đường, khu vực...">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-end mx-auto" style="max-width: 800px;">
+            <button type="submit" value="Submit" class="btn btn-primary">
+                <span>Tiếp theo</span>
+                <i class="fas fa-arrow-right ms-2"></i>
+            </button>
+        </div>
+    </form>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
+<script th:src="@{/access/js/apiprovince.js}"></script>
+
+<script>
+    const apiKey = 'KeONrT42qDbhvyFK5oLjywhE0EAcrxeHh0NTznDz';
+    const addressInput = document.getElementById('address');
+    const addressID = document.getElementById('address-id-api');
+    const suggestionsContainer = document.getElementById('suggestions');
+    const cityInput = document.getElementById('city-api');
+    const districtInput = document.getElementById('district-api');
+    const wardInput = document.getElementById('ward-api');
+    const latitude = document.getElementById('latitude');
+    const longitude = document.getElementById('longitude');
+    let sessionToken = crypto.randomUUID();
+
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    const debouncedSearch = debounce((query) => {
+        if (query.length < 2) {
+            suggestionsContainer.style.display = 'none';
+            return;
+        }
+
+        fetch(`https://rsapi.goong.io/Place/AutoComplete?api_key=${apiKey}&input=${encodeURIComponent(query)}&sessiontoken=${sessionToken}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'OK') {
+                    suggestionsContainer.innerHTML = '';
+                    suggestionsContainer.style.display = 'block';
+
+                    data.predictions.forEach(prediction => {
+                        const div = document.createElement('div');
+                        div.className = 'suggestion-item';
+                        div.textContent = prediction.description;
+
+                        // khi người dùng chọn địa chỉ
+                        div.addEventListener('click', () => {
+                            addressInput.value = prediction.description || '';
+                            suggestionsContainer.style.display = 'none';
+                            addressID.value = prediction.place_id;
+
+                            // Tự động điền các trường địa chỉ từ compound
+                            if (prediction.compound) {
+                                cityInput.value = prediction.compound.province || '';
+                                districtInput.value = prediction.compound.district || '';
+                                wardInput.value = prediction.compound.commune || '';
+                            }
+
+                            console.log("Address updated:", addressInput.value);
+                            fetch(`https://rsapi.goong.io/Place/Detail?place_id=${addressID.value}&api_key=${apiKey}&sessiontoken=${sessionToken}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.status === 'OK' && data.result && data.result.geometry && data.result.geometry.location) {
+                                        const {lat, lng} = data.result.geometry.location;
+                                        latitude.value = lat;
+                                        longitude.value = lng;
+                                    } else {
+                                        console.error("Dữ liệu không hợp lệ hoặc thiếu geometry.location");
+                                    }
+                                })
+                                .catch(error => console.error('Lỗi:', error));
+                        });
+                        suggestionsContainer.appendChild(div);
+                    });
+                }
+            })
+            .catch(error => console.error('Lỗi:', error));
+    }, 300);
+
+    addressInput.addEventListener('input', (e) => debouncedSearch(e.target.value));
+
+    document.addEventListener('click', function (e) {
+        if (!suggestionsContainer.contains(e.target) && e.target !== addressInput) {
+            suggestionsContainer.style.display = 'none';
+        }
+    });
+</script>
+
+<script>
+    // Option card selection
+    document.querySelectorAll('.option-card').forEach(div => {
+        div.addEventListener('click', () => {
+            document.querySelectorAll('.option-card').forEach(item => {
+                item.classList.remove('selected');
+            });
+
+            const radioInput = div.querySelector('input[type="radio"]');
+            if (radioInput) {
+                radioInput.checked = true;
+                div.classList.add('selected');
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Payment with VNPay">
+    <meta name="author" content="">
+    <title>Thanh toán VNPay</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+          integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/access/css/use-info.css}">
+
+    <style>
+        .payment-option {
+            border-radius: 10px;
+            padding: 10px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            height: 80px;
+        }
+
+        .payment-option:hover, .payment-option.active {
+            background-color: #f0f0f0;
+            border: 2px solid #005baa;
+        }
+
+        .countdown {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .time-box {
+            background-color: #005baa;
+            color: white;
+            border-radius: 4px;
+            padding: 5px 10px;
+            margin: 0 5px;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .qr-container {
+            background-color: #005baa;
+            background-image: url(https://homepage.momocdn.net/jk/momo2020/img/intro/qrcode-pattern.png);
+            background-size: cover;
+            border-radius: 16px;
+        }
+
+        .order-details {
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        @media (max-width: 767.98px) {
+            .qr-container {
+                height: auto !important;
+                padding: 20px;
+            }
+
+            .qr-container img {
+                width: 250px !important;
+                height: 250px !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+<!-- Header -->
+<th:block th:insert="~{ home/header :: header}"></th:block>
+
+<div class="container py-5 mt-5">
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#" th:href="@{/user/user-info}">Trang chủ</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Nạp tiền</li>
+                </ol>
+            </nav>
+            <h2 class="mb-4">Nạp tiền vào tài khoản</h2>
+        </div>
+    </div>
+    <!-- Payment Details -->
+    <div class="row g-4">
+        <!-- QR Code Section -->
+        <div class="col-lg-7 mb-4">
+            <div class="qr-container d-flex flex-column align-items-center justify-content-center py-4" style="height: 530px;">
+                <h4 class="text-white mb-4">Quét mã QR để thanh toán</h4>
+                <div class="bg-white p-3 rounded-3 mb-4">
+                    <img class="img-fluid rounded" style="width: 350px; height: 350px;"
+                         th:src="@{/access/image/vnpay.png}" alt="VNPay QR Code">
+                </div>
+                <p class="text-white text-center px-4 mb-0">
+                    Sử dụng <strong>ứng dụng ngân hàng</strong> có hỗ trợ VNPAY QR để quét mã
+                </p>
+            </div>
+        </div>
+
+        <!-- Payment Information -->
+        <div class="col-lg-5 mb-4">
+            <div class="order-details bg-white p-4">
+                <h4 class="border-bottom pb-3 mb-3">Thông tin thanh toán</h4>
+
+                <div class="mb-3">
+                    <h6 class="text-muted mb-2">Nhà cung cấp</h6>
+                    <div class="d-flex align-items-center">
+                        <img class="rounded-circle me-3" style="width: 40px; height: 40px;"
+                             th:src="@{/access/image/herta.png}" alt="Company Logo">
+                        <div class="text-uppercase fw-bold">TH corp</div>
+                    </div>
+                </div>
+
+                <div class="border-bottom mb-3 pb-3"></div>
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="text-muted mb-0">Mã đơn hàng</h6>
+                    <span class="fw-bold" th:text="${user.userPayment.paymentId}">152</span>
+                </div>
+
+                <div class="border-bottom mb-3 pb-3"></div>
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="text-muted mb-0">Mô tả</h6>
+                    <span>Nạp tiền vào tài khoản</span>
+                </div>
+
+                <div class="border-bottom mb-3 pb-3"></div>
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h6 class="text-muted mb-0">Số tiền</h6>
+                    <span class="fw-bold text-danger" th:if="${amount<10000000}" th:text="${amount}">0 VNĐ</span>
+                    <span class="fw-bold text-danger" th:if="${amount>=10000000}" th:text="${amount/1000000+' triệu VNĐ'}">500.000 VNĐ</span>
+                </div>
+
+                <div class="mt-4">
+                    <h6 class="text-muted mb-2">Cách thức thanh toán</h6>
+                    <div class="px-2 py-1 mb-2">
+                        <span class="badge rounded-pill bg-primary">1</span>
+                        <span>Mở ứng dụng ngân hàng có hỗ trợ VNPAY QR trên điện thoại</span>
+                    </div>
+                    <div class="px-2 py-1 mb-2">
+                        <span class="badge rounded-pill bg-primary">2</span>
+                        <span>Trên ứng dụng chọn tính năng <i class="fas fa-qrcode"></i> Quét mã QR</span>
+                    </div>
+                    <div class="px-2 py-1 mb-3">
+                        <span class="badge rounded-pill bg-primary">3</span>
+                        <span>Quét mã QR này và thanh toán</span>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <h6 class="text-muted mb-2">Mã QR sẽ hết hiệu lực sau</h6>
+                    <div class="d-flex justify-content-center mb-3">
+                        <div class="countdown">
+                            <div class="time-box" id="minutes">10</div>
+                            :
+                            <div class="time-box" id="seconds">00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 text-end">
+                    <a th:href="@{/user/user-info}" class="btn btn-primary px-4 py-2">
+                        <i class="fas fa-home me-1"></i> Về trang chủ
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<th:block th:insert="~{ home/footer :: footer}"></th:block>
+
+<!-- JavaScript Libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+<script th:src="@{/access/js/price-format.js}"></script>
+<script th:src="@{/access/js/copyText.js}"></script>
+
+<script>
+    // Highlight selected payment method
+    document.querySelectorAll('.payment-option').forEach(option => {
+        option.addEventListener('click', function() {
+            document.querySelectorAll('.payment-option').forEach(el => {
+                el.classList.remove('active');
+            });
+            this.classList.add('active');
+        });
+    });
+
+    // Countdown timer
+    let minutes = 10;
+    let seconds = 0;
+
+    function updateCountdown() {
+        const minutesBox = document.getElementById("minutes");
+        const secondsBox = document.getElementById("seconds");
+
+        // Decrease time
+        if (seconds === 0) {
+            if (minutes === 0) {
+                clearInterval(countdownInterval); // Stop when time is up
+            } else {
+                minutes--;
+                seconds = 59;
+            }
+        } else {
+            seconds--;
+        }
+
+        // Update UI
+        minutesBox.textContent = minutes.toString().padStart(2, '0');
+        secondsBox.textContent = seconds.toString().padStart(2, '0');
+    }
+
+    // Update every second
+    const countdownInterval = setInterval(updateCountdown, 1000);
+</script>
+</body>
+</html>

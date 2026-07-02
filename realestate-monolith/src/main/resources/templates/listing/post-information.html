@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Tạo bài đăng - Thông tin bất động sản</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet"/>
+    <style>
+        :root { --bs-primary: #007bff; --bs-body-bg: #fff; }
+        body { background-color: var(--bs-body-bg); color: #212529; }
+        .card { border-radius: 1rem; box-shadow: 0 .5rem 1rem rgba(0,0,0,0.1); }
+        .step-indicator { font-size: 1.1rem; color: var(--bs-primary); }
+        .step-indicator span { font-weight: 500; }
+        .form-control, .form-select { border-radius: .75rem; padding: .75rem 1rem; }
+        .btn-primary { background-color: var(--bs-primary); border: none; border-radius: 2rem; padding: .6rem 1.5rem; }
+        .btn-primary:hover { background-color: #0069d9; }
+        .card-title { font-size: 1.25rem; font-weight: 600; color: var(--bs-primary); }
+        .required::after { content: " *"; color: red; }
+    </style>
+</head>
+<body>
+<th:block th:insert="~{ home/header :: header}"></th:block>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-8">
+            <div class="card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="step-indicator"><span>Bước 2:</span> Thông tin bất động sản</div>
+                    <a th:href="@{/home/home}" class="btn btn-outline-secondary">Thoát</a>
+                </div>
+                <hr>
+                <form class="needs-validation" th:action="@{/listing/information}" method="post" novalidate>
+                    <div class="mb-4">
+                        <h2 class="card-title">Thông tin chính</h2>
+                        <div class="row g-3 mt-2">
+                            <div class="col-12">
+                                <label for="type" class="form-label required">Loại BĐS</label>
+                                <select name="property-type" id="type" class="form-select" required>
+                                    <option disabled selected value="">-- Chọn loại BĐS --</option>
+                                    <option value="Căn hộ">Căn hộ chung cư</option>
+                                    <option value="Nhà riêng">Nhà riêng</option>
+                                    <option value="Biệt thự">Nhà biệt thự</option>
+                                    <option value="Nhà mặt phố">Nhà mặt phố</option>
+                                    <option value="Nhà trọ">Nhà trọ/Phòng trọ</option>
+                                    <option value="Đất nền">Đất nền</option>
+                                </select>
+                                <div class="invalid-feedback">Vui lòng chọn loại BĐS.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="square" class="form-label required">Diện tích (m²)</label>
+                                <div class="input-group">
+                                    <input name="square-meters" type="number" id="square" class="form-control" placeholder="Nhập diện tích" required>
+                                    <span class="input-group-text">m²</span>
+                                    <div class="invalid-feedback">Vui lòng nhập diện tích.</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="price" class="form-label required">Mức giá (VNĐ)</label>
+                                <div class="input-group">
+                                    <input name="price" type="number" id="price" class="form-control" placeholder="Nhập giá" required>
+                                    <span class="input-group-text">VNĐ</span>
+                                    <div class="invalid-feedback">Vui lòng nhập mức giá.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <h2 class="card-title">Thông tin khác</h2>
+                        <div class="row g-3 mt-2">
+                            <div class="col-md-6">
+                                <label for="paper" class="form-label required">Giấy tờ pháp lý</label>
+                                <select name="paper" id="paper" class="form-select" required>
+                                    <option disabled selected value="">-- Chọn giấy tờ --</option>
+                                    <option value="Sổ đỏ/Sổ hồng">Sổ đỏ/Sổ hồng</option>
+                                    <option value="Hợp đồng mua bán">Hợp đồng mua bán</option>
+                                    <option value="Đang chờ sổ">Đang chờ sổ</option>
+                                    <option value="Khác">Khác</option>
+                                </select>
+                                <div class="invalid-feedback">Vui lòng chọn giấy tờ.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="house" class="form-label required">Nội thất</label>
+                                <select name="interior" id="house" class="form-select" required>
+                                    <option disabled selected value="">-- Chọn nội thất --</option>
+                                    <option value="Đầy đủ">Đầy đủ</option>
+                                    <option value="Cơ bản">Cơ bản</option>
+                                    <option value="Không">Không có nội thất</option>
+                                </select>
+                                <div class="invalid-feedback">Vui lòng chọn nội thất.</div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="floors" class="form-label required">Số tầng</label>
+                                <input name="floors" type="number" id="floors" class="form-control" placeholder="Nhập số tầng" required>
+                                <div class="invalid-feedback">Vui lòng nhập số tầng.</div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="bedroom" class="form-label required">Phòng ngủ</label>
+                                <input name="bedroom" type="number" id="bedroom" class="form-control" placeholder="Nhập số phòng ngủ" required>
+                                <div class="invalid-feedback">Vui lòng nhập số phòng ngủ.</div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="bathroom" class="form-label required">Phòng tắm</label>
+                                <input name="bathroom" type="number" id="bathroom" class="form-control" placeholder="Nhập số phòng tắm" required>
+                                <div class="invalid-feedback">Vui lòng nhập số phòng tắm.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary">Tiếp theo</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    (function(){ 'use strict'; var forms=document.querySelectorAll('.needs-validation'); Array.prototype.slice.call(forms).forEach(function(f){ f.addEventListener('submit',function(e){ if(!f.checkValidity()){e.preventDefault();e.stopPropagation();}f.classList.add('was-validated');},false);});})();
+</script>
+</body>
+</html>
